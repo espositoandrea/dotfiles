@@ -140,5 +140,15 @@ ex ()
 
 # Set VI mode
 set -o vi
+
+# Restore color scheme
 (cat ~/.cache/wal/sequences &)
+
+# Command to manage dotfiles
 alias config='/usr/bin/git --git-dir=/home/andrea/Documents/dotfiles/ --work-tree=/home/andrea'
+
+# Powerline
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+. /usr/share/powerline/bindings/bash/powerline.sh
