@@ -138,9 +138,6 @@ ex ()
   fi
 }
 
-# Set VI mode
-set -o vi
-
 # Restore color scheme
 (cat ~/.cache/wal/sequences &)
 
