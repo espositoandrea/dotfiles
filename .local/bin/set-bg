@@ -1,0 +1,5 @@
+#!/bin/sh
+
+feh --bg-fill "$1"
+sudo ln -fs "$1" /usr/share/backgrounds/current
+wal -qn -i "$1"
