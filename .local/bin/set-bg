@@ -1,5 +1,6 @@
 #!/bin/sh
 
-feh --bg-fill "$1"
-sudo ln -fs "$1" /usr/share/backgrounds/current
-wal -qn -i "$1"
+$REAL_FILE="$(realpath "$1")"
+feh --bg-fill "$REAL_FILE"
+sudo ln -fs "$REAL_FILE" /usr/share/backgrounds/current
+wal -qn -i "$REAL_FILE"
