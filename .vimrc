@@ -6,6 +6,7 @@ set noexpandtab
 set cc=80
 set mouse-=a
 set tw=79
+set fo-=t
 
 " Remap movement between splits from <C-w>MOVEMENT to <C-MOVEMENT>
 map <C-j> <C-w>j
