@@ -72,7 +72,7 @@
 		"pywal:color7": 7,
 		"pywal:color8": 8,
 
-		"pywal:background": 1,
+		"pywal:background": 2,
 		"pywal:foreground": 7,
 
 		"solarized:base03": [8, "002b36"],

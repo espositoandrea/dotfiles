@@ -2,7 +2,7 @@
 	"name": "Default",
 	"groups": {
 
-		"user":                       { "fg": "pywal:foreground", "bg": "pywal:background", "attrs": [] },
+		"user":                       { "fg": "pywal:foreground", "bg": "pywal:background", "attrs": ["bold"] },
 		"branch":                     { "fg": "pywal:foreground", "bg": "pywal:color2", "attrs": [] },
 		"branch_dirty":               { "fg": "brightyellow", "bg": "gray2", "attrs": [] },
 		"branch_clean":               { "fg": "gray9", "bg": "gray2", "attrs": [] },
