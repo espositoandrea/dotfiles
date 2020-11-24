@@ -244,8 +244,8 @@ format-connected = %{A1:i3-sensible-terminal -e nmtui &:}<ramp-signal> <label-co
 format-connected-underline = ${xrdb:color3:#9f78e1}
 label-connected = %essid% (%signal%%)
 
-format-disconnected =
-;format-disconnected = <label-disconnected>
+;format-disconnected =
+format-disconnected = <label-disconnected>
 ;format-disconnected-underline = ${self.format-connected-underline}
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
