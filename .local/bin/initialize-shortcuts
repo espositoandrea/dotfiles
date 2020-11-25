@@ -1,12 +1,39 @@
 #!/bin/bash
 
 config=${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutsconfig
-sed -e 's/\([^\\]\|^\s*\)#.*$//' -e '/^\s*$/d' -e 's/:/ /' "$config" | \
+
+clean_config=$(
+	sed -e 's/\([^\\]\|^\s*\)#.*$//' -e '/^\s*$/d' -e 's/:/ /' \
+		-e 's/^/echo "/;s/$/"/' \
+		"$config" | source /dev/stdin
+)
+
+man_text=$(echo ".TH SHORTCUTS 1 \"$(date '+%4Y\-%m\-%d')\"
+.SH NAME
+shortcuts \\- some useful shortcuts
+.SH SYNOPSIS
+\\fIshortcut\\fP
+.SH DESCRIPTION
+The following is a list of commands that can be used to quickly navigate
+between directories. Invoking one of the following commands will simply execute
+a
+.B cd
+into the specified directory (listed below).
+$( echo "$clean_config" | \
+	awk '{
+		short=$1;
+		$1="";
+		gsub(/^[ \t]+/,"",$0);
+		printf(".TP\n\\fB%s\\fI\n%s\n", short, $0 )
+	}')
+")
+
+echo "$clean_config" | \
 	awk '{
 		short=$1;
 		$1="";
 		gsub(/^[ \t]+/,"",$0);
 		printf("alias %s=\"cd \\\"%s\\\"\"\n", short, $0 )
 	}' > "$(dirname "$config")/shortcuts.sh"
-
-echo "alias list-shortcuts=\"less '$config'\"" >> "$(dirname "$config")/shortcuts.sh"
+echo "alias list-shortcuts=\"echo '$man_text' | man -l -\"" \
+	>> "$(dirname "$config")/shortcuts.sh"
