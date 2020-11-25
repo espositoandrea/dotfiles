@@ -149,3 +149,6 @@ alias config='/usr/bin/git --git-dir=/home/andrea/Documents/dotfiles/ --work-tre
 # POWERLINE_BASH_CONTINUATION=1
 # POWERLINE_BASH_SELECT=1
 # . /usr/share/powerline/bindings/bash/powerline.sh
+
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcuts.sh" ] && \
+	. "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcuts.sh"

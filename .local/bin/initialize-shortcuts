@@ -1,0 +1,12 @@
+#!/bin/bash
+
+config=${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutsconfig
+sed -e 's/\([^\\]\|^\s*\)#.*$//' -e '/^\s*$/d' -e 's/:/ /' "$config" | \
+	awk '{
+		short=$1;
+		$1="";
+		gsub(/^[ \t]+/,"",$0);
+		printf("alias %s=\"cd \\\"%s\\\"\"\n", short, $0 )
+	}' > "$(dirname "$config")/shortcuts.sh"
+
+echo "alias list-shortcuts=\"less '$config'\"" >> "$(dirname "$config")/shortcuts.sh"
