@@ -47,6 +47,7 @@ smart_borders on
 exec --no-startup-id mkdir -p ~/Pictures/Screenshots
 bindsym Print exec flameshot full -c
 bindsym $mod+Print exec flameshot full -p ~/Pictures/Screenshots
+bindsym $mod+Shift+Print exec flameshot gui -p ~/Pictures/Screenshots
 
 # Open file manager
 bindsym $mod+n exec i3-sensible-terminal -e ranger
