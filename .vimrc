@@ -8,6 +8,10 @@ set mouse-=a
 set tw=79
 set fo-=t
 
+let &t_SI = "\<esc>[5 q"  " blinking I-beam in insert mode
+let &t_SR = "\<esc>[3 q"  " blinking underline in replace mode
+let &t_EI = "\<esc>[1 q"  " default cursor (usually blinking block) otherwise
+
 " Remap movement between splits from <C-w>MOVEMENT to <C-MOVEMENT>
 map <C-j> <C-w>j
 map <C-k> <C-w>k
