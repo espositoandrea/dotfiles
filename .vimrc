@@ -22,16 +22,22 @@ map <C-l> <C-w>l
 vnoremap < <gv
 vnoremap > >gv
 
+" When
+
 " Plugins
 call plug#begin()
-Plug 'vim-latex/vim-latex'
-Plug 'junegunn/goyo.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'ap/vim-css-color'
+	Plug 'vim-latex/vim-latex'
+	Plug 'junegunn/goyo.vim'
+	Plug 'vim-airline/vim-airline'
+	Plug 'ap/vim-css-color'
+	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
 
 " Status bar (vim-airline)
 let g:airline_powerline_fonts = 1
+
+" Markdown Preview
+let g:mkdp_browser = 'surf'
 
 " Fix for Goyo background
 autocmd! User GoyoLeave nested set background=dark
