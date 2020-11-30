@@ -131,6 +131,8 @@ bindsym $mod+Ctrl+s scratchpad show
 # focus the parent container
 bindsym $mod+a focus parent
 
+bindsym $mod+F10 exec emojis
+
 # focus the child container
 #bindsym $mod+d focus child
 

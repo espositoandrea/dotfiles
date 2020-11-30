@@ -1,0 +1,18 @@
+#!/bin/sh
+
+CONFIG_FILE="${XDG_HOME_CACHE:-$HOME/.cache}/emojis/emojis"
+
+update_cache(){
+	echo Updating cache...
+	mkdir -p "$(dirname "$CONFIG_FILE")"
+	wget -qO - https://raw.githubusercontent.com/LukeSmithxyz/voidrice/master/.local/share/larbs/emoji \
+		> "$CONFIG_FILE"
+}
+
+[ ! -f $CONFIG_FILE -o "$1" = "-r" ] && update_cache
+
+emoji=$(dmenu -fn 'sans-serif' < "$CONFIG_FILE" \
+	| sed -e 's/ .*//' \
+	| tr -d '\n')
+
+[ ! -z "$emoji" ] && echo "$emoji" | xclip -sel clip && notify-send "Copyed to clipboard: $emoji"
