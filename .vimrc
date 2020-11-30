@@ -8,6 +8,10 @@ set mouse-=a
 set tw=79
 set fo-=t
 
+" When activating list, show tabs and other non-visible characters as defined
+set lcs=tab:├─,eol:⏎,trail:·,nbsp:⎵
+nnoremap <F3> :set list!<CR>
+
 let &t_SI = "\<esc>[5 q"  " blinking I-beam in insert mode
 let &t_SR = "\<esc>[3 q"  " blinking underline in replace mode
 let &t_EI = "\<esc>[1 q"  " default cursor (usually blinking block) otherwise
