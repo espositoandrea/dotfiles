@@ -139,7 +139,7 @@ ex ()
 }
 
 # Restore color scheme
-(cat ~/.cache/wal/sequences &)
+# (cat ~/.cache/wal/sequences &)
 
 # Command to manage dotfiles
 alias config='/usr/bin/git --git-dir=/home/andrea/Documents/dotfiles/ --work-tree=/home/andrea'
