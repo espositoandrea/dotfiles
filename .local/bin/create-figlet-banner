@@ -1,0 +1,52 @@
+#/bin/sh
+
+synopsis(){
+	echo "Usage: $0 [options] TITLE"
+}
+
+BACKGROUND="black"
+FOREGROUND="white"
+FONT="standard"
+RESOLUTION="1280x640"
+
+while getopts "hc:b:f:" o; do
+	case $o in
+		h)
+			synopsis
+			echo "Create a social banner using FIGlet. Print it to STDOUT by default."
+			echo "Options:"
+			echo "	-c color	Set foreground color"
+			echo "	-b color	Set background color"
+			echo "	-f fontname	Set font"
+			echo "	-r resolution	Set output resolution. Format: '<width>x<height>'"
+			exit
+			;;
+		c)
+			FOREGROUND="$OPTARG"
+			;;
+		b)
+			BACKGROUND="$OPTARG"
+			;;
+		f)
+			FONT="$OPTARG"
+			;;
+		r)
+			RESOLUTION="$OPTARG"
+			;;
+		*)
+			echo "Try '$0 -h' to get more help." >&2
+			exit 1
+			;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+[ -z "$1" ] && "Missing parameter: FILE." >&2 && synopsis >&2 && exit 1
+
+figlet -f "$FONT" -w500 "$1" | convert \
+	-background "$BACKGROUND" -fill "$FOREGROUND" \
+	-size "$RESOLUTION" -gravity center \
+	-font "Source-Code-Pro" -pointsize 15 \
+	label:"@-" \
+	png:-
