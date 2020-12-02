@@ -1,0 +1,277 @@
+#!/usr/bin/env python3
+# vim: set ts=4 sw=4 expandtab :
+
+"""A simple Git-inspired CLI to use RClone (https://rclone.org).
+
+Usage
+-----
+1. Configure RClone by adding your remotes.
+2. Call this program with ``cloud clone <remote>`` in an empty directory to
+   clone a remote, where ``<remote>`` follows the following grammar:
+   ``<remote> ::= <rclone_remote_name>:[<path_to_clone>]``
+
+   .. NOTE::
+      A ``.cloudconfig`` configuration file will be created.
+
+3. To pull new file and changes, run ``cloud pull``
+4. To push to the remote, run ``cloud push``
+
+License (MIT License)
+---------------------
+
+Copyright (c) 2020 Andrea Esposito.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+"""
+
+__version__ = "2.0.0"
+
+import argparse
+import subprocess
+import yaml
+from pathlib import Path
+import logging
+import re
+
+
+class Configuration:
+    CONFIG_FILE_NAME = ".cloudconfig"
+
+    def __init__(self, path: Path):
+        self.base_path = Configuration.search_config(path)
+        self.__read_config()
+
+    @staticmethod
+    def search_config(starting_path: Path) -> Path:
+        base_path = starting_path.resolve().absolute()
+        while base_path != base_path.parent and not \
+                (base_path / Configuration.CONFIG_FILE_NAME).is_file():
+            base_path = base_path.parent
+
+        if not (base_path / Configuration.CONFIG_FILE_NAME).is_file():
+            raise FileNotFoundError(
+                "Config file '{}'".format(Configuration.CONFIG_FILE_NAME) + \
+                " not found in either the current directory or its parents"
+            )
+
+        return base_path
+
+    @staticmethod
+    def write_default(path: Path, remote: str) -> None:
+        with (path / Configuration.CONFIG_FILE_NAME).open("w") as f:
+            f.write("# vim: set ft=yaml tw=2 ts=2 expandtab sw=2 :\n\n")
+            f.write(yaml.dump({
+                'remote': remote,
+                'exclude': []
+            }))
+
+    def __read_config(self) -> None:
+        with (self.base_path / Configuration.CONFIG_FILE_NAME).open() as f:
+            config = yaml.safe_load(f)
+
+        self.remote = config['remote']
+        self.exclude = config.get('exclude', [])
+
+
+def get_yes_or_no(prompt="Are you sure you want to continue?",
+                  default=None):
+    menu = " [{}/{}] ".format('Y' if default is True else 'y',
+                              'N' if default is False else 'n')
+    choice = input(prompt + menu)
+    if not choice and default is not None:
+        return default
+    while choice.lower() not in {"y", "yes", "n", "no"}:
+        choice = input(prompt + menu)
+    return choice.lower() in {"y", "yes"}
+
+
+def rclone_sync(source, dest, exclusion_list=None, dry_run=False,
+                progress=False):
+    def get_exclusion(files):
+        l = list()
+        for f in files:
+            l.append('--exclude')
+            l.append(f)
+        return l
+
+    exclude_list = [
+        Configuration.CONFIG_FILE_NAME, '.Trash-*',
+        *([] if exclusion_list is None else exclusion_list)
+    ]
+    rclone_command = [
+        'rclone', 'sync', str(source), str(dest),
+        *get_exclusion(exclude_list),
+        '--create-empty-src-dirs'
+    ]
+    if dry_run:
+        rclone_command.append('--dry-run')
+    if progress:
+        rclone_command.append('--progress')
+
+    proc = subprocess.run(rclone_command, text=True, capture_output=True)
+    out = ''
+    if dry_run:
+        out = proc.stderr
+        lines = out.splitlines()
+        out = []
+        for line in lines:
+            m = re.match(
+                r"^\d+?/\d+?/\d+?\s+?\d+?:\d+?:\d+?\s+?NOTICE:\s+?(.*) as .*$",
+                line)
+            out.append(m.group(1) if m else line)
+        out = "\n".join(out)
+    return out
+
+
+def pull(args):
+    config = Configuration(Path.cwd())
+    cwd = Path.cwd()
+    source = config.remote if args.all else str(Path(
+        config.remote) / cwd.relative_to(config.base_path))
+    target = config.base_path if args.all else cwd
+    logging.info("Pulling '%s' to '%s'", source, target)
+    if args.ask_confirmation:
+        out = rclone_sync(source, target, dry_run=True,
+                          exclusion_list=config.exclude)
+        if not out:
+            print("Nothing to do. Aborting")
+            return
+        print(out)
+        is_ok = get_yes_or_no(default=True)
+        if not is_ok:
+            print("Aborting")
+            return
+
+    rclone_sync(source, target, exclusion_list=config.exclude)
+
+
+def clone(args) -> None:
+    cwd = Path.cwd()
+    logging.info("Cloning remote '%s'", args.remote)
+    if not args.force and any(cwd.iterdir()):
+        raise AssertionError(
+            "The current directory must be empty."
+            "To override this behaviour use '--force'."
+        )
+    rclone_sync(args.remote, cwd)
+    logging.info("Creating default configuration")
+    Configuration.write_default(cwd, args.remote)
+
+
+def push(args):
+    config = Configuration(Path.cwd())
+    cwd = Path.cwd()
+    target = config.remote if args.all else str(Path(
+        config.remote) / cwd.relative_to(config.base_path))
+    source = config.base_path if args.all else cwd
+    logging.info("Pushing '%s' to '%s'", source, target)
+    if args.ask_confirmation:
+        out = rclone_sync(source, target, dry_run=True,
+                          exclusion_list=config.exclude)
+        if not out:
+            print("Nothing to do. Aborting")
+            return
+        print(out)
+        is_ok = get_yes_or_no(default=True)
+        if not is_ok:
+            print("Aborting")
+            return
+
+    rclone_sync(source, target, exclusion_list=config.exclude)
+
+
+def cli():
+    parser = argparse.ArgumentParser(
+        prog="cloud",
+        epilog="Copyright (c) 2020 Andrea Esposito."
+    )
+    parser.add_argument(
+        '--version', '-v',
+        action='version',
+        version="%(prog)s {}".format(__version__)
+    )
+    parser.add_argument(
+        '--verbose', '-V',
+        action='store_true',
+        dest='verbose'
+    )
+    subparsers = parser.add_subparsers(
+        title="subcommands",
+        dest="subcommand",
+        required=True
+    )
+
+    push_parser = subparsers.add_parser('push')
+    push_parser.add_argument(
+        "--yes", "-y",
+        help="Do not prompt for confirmation",
+        action="store_false",
+        dest="ask_confirmation"
+    )
+    push_parser.add_argument(
+        "--all", "-a",
+        help="Push the entire cloud directory, not only the current directory",
+        action="store_true",
+        dest="all"
+    )
+    push_parser.set_defaults(func=push)
+
+    pull_parser = subparsers.add_parser('pull')
+    pull_parser.add_argument(
+        "--yes", "-y",
+        help="Do not prompt for confirmation",
+        action="store_false",
+        dest="ask_confirmation"
+    )
+    pull_parser.add_argument(
+        "--all", "-a",
+        help="Pull the entire cloud directory, not only the current directory",
+        action="store_true",
+        dest="all"
+    )
+    pull_parser.set_defaults(func=pull)
+
+    clone_parser = subparsers.add_parser('clone')
+    clone_parser.add_argument(
+        'remote',
+        help="The RClone remote to clone",
+    )
+    clone_parser.add_argument(
+        '--force', '-f',
+        help="Force the execution in a non-empty directory",
+        dest='force',
+        action='store_true'
+    )
+    clone_parser.set_defaults(func=clone)
+    args = parser.parse_args()
+    return args
+
+
+if __name__ == '__main__':
+    args = cli()
+    logging.basicConfig(level=logging.INFO)
+    if not args.verbose:
+        logging.disable()
+    try:
+        args.func(args)
+    except KeyboardInterrupt:
+        exit(1)
