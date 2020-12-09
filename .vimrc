@@ -34,6 +34,7 @@ call plug#begin()
 	Plug 'junegunn/goyo.vim'
 	Plug 'vim-airline/vim-airline'
 	Plug 'ap/vim-css-color'
+	Plug 'mattn/emmet-vim'
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
 
