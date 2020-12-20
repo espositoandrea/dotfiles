@@ -70,9 +70,9 @@ if ${use_color} ; then
 	fi
 
 	if [[ ${EUID} == 0 ]] ; then
-		PS1='\[\033[01;31m\][\h\[\033[01;36m\] \w\[\033[01;31m\]]\$\[\033[00m\] '
+		PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
 	else
-		PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \w\[\033[01;32m\]]\$\[\033[00m\] '
+		PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
 	fi
 
 	alias ls='ls --color=auto'
@@ -139,7 +139,7 @@ ex ()
 }
 
 # Restore color scheme
-# (cat ~/.cache/wal/sequences &)
+(cat ~/.cache/wal/sequences &)
 
 # Command to manage dotfiles
 alias config='/usr/bin/git --git-dir=/home/andrea/Documents/dotfiles/ --work-tree=/home/andrea'
