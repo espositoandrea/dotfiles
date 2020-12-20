@@ -18,7 +18,11 @@ The following is a list of commands that can be used to quickly navigate
 between directories. Invoking one of the following commands will simply execute
 a
 .B cd
-into the specified directory (listed below).
+into the specified directory (listed in the section \\(lqAvailable
+shortcuts\\(rq).
+.SS Configuration
+To configure the shortcuts, edit the file \\fB$config\\fP
+.SS Available shortcuts
 $( echo "$clean_config" | \
 	awk '{
 		short=$1;
@@ -27,6 +31,8 @@ $( echo "$clean_config" | \
 		printf(".TP\n\\fB%s\\fI\n%s\n", short, $0 )
 	}')
 ")
+
+[ "$1" = "-h" ] && echo "$man_text" | man -l - && exit
 
 echo "$clean_config" | \
 	awk '{
