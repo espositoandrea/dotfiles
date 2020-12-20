@@ -9,7 +9,7 @@ FOREGROUND="white"
 FONT="standard"
 RESOLUTION="1280x640"
 
-while getopts "hc:b:f:" o; do
+while getopts "hc:b:f:r:" o; do
 	case $o in
 		h)
 			synopsis
