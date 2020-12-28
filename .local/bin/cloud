@@ -51,6 +51,8 @@ import yaml
 from pathlib import Path
 import logging
 import re
+import colorama
+from colorama import Fore, Style
 
 
 class Configuration:
@@ -137,7 +139,18 @@ def rclone_sync(source, dest, exclusion_list=None, dry_run=False,
             m = re.match(
                 r"^\d+?/\d+?/\d+?\s+?\d+?:\d+?:\d+?\s+?NOTICE:\s+?(.*) as .*$",
                 line)
-            out.append(m.group(1) if m else line)
+            if m:
+                line = m.group(1)
+                if m := re.match(r"^(.*?): Skipped update modification time$", line):
+                    out.append(f"{Fore.YELLOW}~ {m.group(1)} 🕑{Style.RESET_ALL}")
+                elif m := re.match(r"^(.*?): Skipped delete$", line):
+                    out.append(f"{Fore.RED}- {m.group(1)}{Style.RESET_ALL}")
+                elif m := re.match(r"^(.*?): Skipped copy$", line):
+                    out.append(f"{Fore.GREEN}+ {m.group(1)}{Style.RESET_ALL}")
+                else:
+                    out.append(line)
+            else:
+                out.append(line)
         out = "\n".join(out)
     return out
 
@@ -172,9 +185,10 @@ def clone(args) -> None:
             "The current directory must be empty."
             "To override this behaviour use '--force'."
         )
-    rclone_sync(args.remote, cwd)
     logging.info("Creating default configuration")
     Configuration.write_default(cwd, args.remote)
+    if not args.bare:
+        rclone_sync(args.remote, cwd)
 
 
 def push(args):
@@ -256,6 +270,12 @@ def cli():
         help="The RClone remote to clone",
     )
     clone_parser.add_argument(
+        '--bare', '-b',
+        help="Just create a .cloudconfig",
+        action="store_true",
+        dest="bare"
+    )
+    clone_parser.add_argument(
         '--force', '-f',
         help="Force the execution in a non-empty directory",
         dest='force',
@@ -267,6 +287,7 @@ def cli():
 
 
 if __name__ == '__main__':
+    colorama.init()
     args = cli()
     logging.basicConfig(level=logging.INFO)
     if not args.verbose:
