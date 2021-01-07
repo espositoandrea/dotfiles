@@ -41,6 +41,7 @@ format-offset =
 [colors]
 ; Nord theme ============
 background = #2F343F
+background-alt= #3F444F
 foreground = #f3f4f5
 alert = #d08770
 volume-min = #a3be8c
@@ -1366,7 +1367,7 @@ label-monitor = %name%
 
 label-active = %name%
 label-active-foreground = ${colors.foreground}
-label-active-background = ${colors.background}
+label-active-background = ${colors.background-alt}
 label-active-underline= #6790eb
 label-active-padding = 2
 
