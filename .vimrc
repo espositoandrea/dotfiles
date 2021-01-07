@@ -32,6 +32,7 @@ vnoremap > >gv
 " Plugins
 call plug#begin()
 	" Plug 'vim-latex/vim-latex'
+	Plug 'lervag/vimtex'
 	Plug 'junegunn/goyo.vim'
 	Plug 'vim-airline/vim-airline'
 	Plug 'ap/vim-css-color'
@@ -40,6 +41,8 @@ call plug#begin()
 	Plug 'joom/latex-unicoder.vim'
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
+
+let g:vimtex_view_method = 'zathura'
 
 " Status bar (vim-airline)
 let g:airline_powerline_fonts = 1
