@@ -698,8 +698,9 @@ font-3 = "Noto Sans Mono:size=10;0"
 font-4 = "FontAwesome5Brands:size=13;0"
 
 modules-left = ewmh
-modules-center = kernel
-modules-right = pavolume memory2 cpu2 date
+; modules-center = kernel xwindow
+modules-center = xwindow
+modules-right = pavolume memory2 cpu2 date battery
 
 tray-detached = false
 tray-offset-x = 0
@@ -1983,3 +1984,5 @@ format-foreground = ${colors.foreground}
 format-background = ${colors.background}
 
 ###############################################################################
+
+; vim:ft=dosini
