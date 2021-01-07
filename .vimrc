@@ -35,12 +35,15 @@ call plug#begin()
 	Plug 'lervag/vimtex'
 	Plug 'junegunn/goyo.vim'
 	Plug 'vim-airline/vim-airline'
+	Plug 'dracula/vim', { 'as': 'dracula' }
 	Plug 'ap/vim-css-color'
 	Plug 'mattn/emmet-vim'
 	Plug 'preservim/nerdcommenter'
 	Plug 'joom/latex-unicoder.vim'
 	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
+
+colorscheme dracula
 
 let g:vimtex_view_method = 'zathura'
 
@@ -63,3 +66,6 @@ vnoremap <C-q> :<C-u>call unicoder#selection()<CR>
 
 " Fix for Goyo background
 autocmd! User GoyoLeave nested set background=dark
+
+" Fix for transparent background with dracula theme
+hi Normal guibg=NONE ctermbg=NONE
