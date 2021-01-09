@@ -1,44 +1,46 @@
-import System.IO
-import System.Exit
+import           System.Exit
+import           System.IO
 
-import XMonad
-import XMonad.Hooks.SetWMName
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageHelpers(doFullFloat, doCenterFloat, isFullscreen, isDialog)
-import XMonad.Config.Desktop
-import XMonad.Config.Azerty
-import XMonad.Util.Run(spawnPipe)
-import XMonad.Actions.SpawnOn
-import XMonad.Util.EZConfig
-import XMonad.Actions.CycleWS
-import XMonad.Hooks.UrgencyHook
-import qualified Codec.Binary.UTF8.String as UTF8
+import qualified Codec.Binary.UTF8.String            as UTF8
+import           XMonad
+import           XMonad.Actions.CycleWS
+import           XMonad.Actions.SpawnOn
+import           XMonad.Config.Azerty
+import           XMonad.Config.Desktop
+import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageDocks
+import           XMonad.Hooks.ManageHelpers          (doCenterFloat,
+                                                      doFullFloat, isDialog,
+                                                      isFullscreen)
+import           XMonad.Hooks.SetWMName
+import           XMonad.Hooks.UrgencyHook
+import           XMonad.Util.EZConfig
+import           XMonad.Util.Run                     (spawnPipe)
 
-import XMonad.Layout.Spacing
-import XMonad.Layout.Gaps
-import XMonad.Layout.ResizableTile
+import           XMonad.Layout.Gaps
+import           XMonad.Layout.ResizableTile
+import           XMonad.Layout.Spacing
 ---import XMonad.Layout.NoBorders
-import XMonad.Layout.Fullscreen (fullscreenFull)
-import XMonad.Layout.Cross(simpleCross)
-import XMonad.Layout.Spiral(spiral)
-import XMonad.Layout.ThreeColumns
-import XMonad.Layout.MultiToggle
-import XMonad.Layout.MultiToggle.Instances
-import XMonad.Layout.IndependentScreens
-import XMonad.Util.SpawnOnce (spawnOnce)
+import           XMonad.Layout.Cross                 (simpleCross)
+import           XMonad.Layout.Fullscreen            (fullscreenFull)
+import           XMonad.Layout.IndependentScreens
+import           XMonad.Layout.MultiToggle
+import           XMonad.Layout.MultiToggle.Instances
+import           XMonad.Layout.Spiral                (spiral)
+import           XMonad.Layout.ThreeColumns
+import           XMonad.Util.SpawnOnce               (spawnOnce)
 
 
-import XMonad.Layout.CenteredMaster(centerMaster)
+import           XMonad.Layout.CenteredMaster        (centerMaster)
 
-import Graphics.X11.ExtraTypes.XF86
-import qualified XMonad.StackSet as W
-import qualified Data.Map as M
-import qualified Data.ByteString as B
-import Control.Monad (liftM2)
-import qualified DBus as D
-import qualified DBus.Client as D
+import           Control.Monad                       (liftM2)
+import qualified DBus                                as D
+import qualified DBus.Client                         as D
+import qualified Data.ByteString                     as B
+import qualified Data.Map                            as M
+import           Graphics.X11.ExtraTypes.XF86
+import qualified XMonad.StackSet                     as W
 
 
 myStartupHook = do
@@ -70,13 +72,13 @@ myBaseConfig = desktopConfig
 
 -- window manipulations
 myManageHook = composeAll . concat $
-    [ [isDialog --> doCenterFloat]
-    , [className =? c --> doCenterFloat | c <- myCFloats]
-    , [title =? t --> doFloat | t <- myTFloats]
-    , [resource =? r --> doFloat | r <- myRFloats]
-    , [resource =? i --> doIgnore | i <- myIgnores]
-    ]
-    where
+  [ [isDialog --> doCenterFloat]
+  , [className =? c --> doCenterFloat | c <- myCFloats]
+  , [title =? t --> doFloat | t <- myTFloats]
+  , [resource =? r --> doFloat | r <- myRFloats]
+  , [resource =? i --> doIgnore | i <- myIgnores]
+  ]
+  where
     myCFloats = ["Arandr", "Arcolinux-tweak-tool.py", "Arcolinux-welcome-app.py", "Galculator", "feh", "mpv", "Xfce4-terminal"]
     myTFloats = ["Downloads", "Save As..."]
     myRFloats = []
@@ -104,13 +106,13 @@ myLayout = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True $ avoidSt
 
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
-    -- mod-button1, Set the window to floating mode and move by dragging
-    [ ((modMask, 1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
-    -- mod-button2, Raise the window to the top of the stack
-    , ((modMask, 2), (\w -> focus w >> windows W.shiftMaster))
-    -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modMask, 3), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
-    ]
+  -- mod-button1, Set the window to floating mode and move by dragging
+  [ ((modMask, 1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
+  -- mod-button2, Raise the window to the top of the stack
+  , ((modMask, 2), (\w -> focus w >> windows W.shiftMaster))
+  -- mod-button3, Set the window to floating mode and resize by dragging
+  , ((modMask, 3), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
+  ]
 
 
 -- keys config
@@ -124,23 +126,22 @@ myKeys =
 
 main :: IO ()
 main = do
-    dbus <- D.connectSession
-    D.requestName dbus (D.busName_ "org.xmonad.Log")
-        [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+  dbus <- D.connectSession
+  D.requestName dbus (D.busName_ "org.xmonad.Log")
+      [ D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue ]
 
-
-    xmonad . ewmh $
-            myBaseConfig
-                {startupHook = myStartupHook
-, layoutHook = gaps [(U,35), (D,5), (R,5), (L,5)] $ myLayout ||| layoutHook myBaseConfig
-, terminal = myTerminal
-, manageHook = manageSpawn <+> myManageHook <+> manageHook myBaseConfig
-, modMask = myModMask
-, borderWidth = myBorderWidth
-, handleEventHook    = handleEventHook myBaseConfig <+> fullscreenEventHook
-, focusFollowsMouse = myFocusFollowsMouse
-, workspaces = myWorkspaces
-, focusedBorderColor = focdBord
-, normalBorderColor = normBord
-, mouseBindings = myMouseBindings
-} `additionalKeys` myKeys
+  xmonad . ewmh $
+    myBaseConfig
+      { startupHook = myStartupHook
+      , layoutHook = gaps [(U,35), (D,5), (R,5), (L,5)] $ myLayout ||| layoutHook myBaseConfig
+      , terminal = myTerminal
+      , manageHook = manageSpawn <+> myManageHook <+> manageHook myBaseConfig
+      , modMask = myModMask
+      , borderWidth = myBorderWidth
+      , handleEventHook    = handleEventHook myBaseConfig <+> fullscreenEventHook
+      , focusFollowsMouse = myFocusFollowsMouse
+      , workspaces = myWorkspaces
+      , focusedBorderColor = focdBord
+      , normalBorderColor = normBord
+      , mouseBindings = myMouseBindings
+      } `additionalKeys` myKeys
