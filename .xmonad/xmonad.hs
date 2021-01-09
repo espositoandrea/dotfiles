@@ -27,6 +27,7 @@ import XMonad.Layout.ThreeColumns
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.IndependentScreens
+import XMonad.Util.SpawnOnce (spawnOnce)
 
 
 import XMonad.Layout.CenteredMaster(centerMaster)
@@ -42,6 +43,7 @@ import qualified DBus.Client as D
 
 myStartupHook = do
     spawn "$HOME/.xmonad/scripts/autostart.sh"
+    spawnOnce "/usr/bin/emacs --daemon &" -- emacs daemon
     setWMName "LG3D"
 
 -- colours
@@ -56,13 +58,13 @@ winType  = "#c678dd"
 --controlMask= ctrl key
 --shiftMask= shift key
 
+myTerminal = "urxvt"
 myModMask = mod4Mask
 encodeCChar = map fromIntegral . B.unpack
 myFocusFollowsMouse = True
 myBorderWidth = 2
 -- myWorkspaces    = ["\61612","\61899","\61947","\61635","\61502","\61501","\61705","\61564","\62150","\61872"]
 myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
---myWorkspaces    = ["I","II","III","IV","V","VI","VII","VIII","IX","X"]
 
 myBaseConfig = desktopConfig
 
@@ -102,16 +104,12 @@ myLayout = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True $ avoidSt
 
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
-
     -- mod-button1, Set the window to floating mode and move by dragging
     [ ((modMask, 1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
-
     -- mod-button2, Raise the window to the top of the stack
     , ((modMask, 2), (\w -> focus w >> windows W.shiftMaster))
-
     -- mod-button3, Set the window to floating mode and resize by dragging
     , ((modMask, 3), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
-
     ]
 
 
@@ -135,7 +133,7 @@ main = do
             myBaseConfig
                 {startupHook = myStartupHook
 , layoutHook = gaps [(U,35), (D,5), (R,5), (L,5)] $ myLayout ||| layoutHook myBaseConfig
-, terminal = "urxvt"
+, terminal = myTerminal
 , manageHook = manageSpawn <+> myManageHook <+> manageHook myBaseConfig
 , modMask = myModMask
 , borderWidth = myBorderWidth
