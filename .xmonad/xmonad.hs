@@ -16,6 +16,7 @@ import           XMonad.Hooks.ManageHelpers          (doCenterFloat,
 import           XMonad.Hooks.SetWMName
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Util.EZConfig
+import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.Run                     (spawnPipe)
 
 import           XMonad.Layout.Gaps
@@ -94,7 +95,14 @@ myManageHook = composeAll . concat $
     -- my9Shifts = []
     -- my10Shifts = ["discord"]
 
-
+myScratchpads :: [NamedScratchpad]
+myScratchpads =
+  [ NS "terminal" (myTerminal ++  " -name scratchpad")  (resource =? "scratchpad") smallRectFloating
+  , NS "obs" ("obs")  (className =? "obs") mediumRectFloating
+  ]
+  where
+    smallRectFloating = customFloating $ W.RationalRect (2/6) (2/6) (2/6) (2/6)
+    mediumRectFloating = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
 
 
 myLayout = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True $ avoidStruts $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) $ tiled ||| Mirror tiled ||| spiral (6/7)  ||| ThreeColMid 1 (3/100) (1/2) ||| Full
@@ -122,6 +130,8 @@ myKeys =
   [ ((mod4Mask , xK_x), spawn $ "arcolinux-logout" )
   , ((mod4Mask .|. shiftMask , xK_q ), kill)
   , ((mod4Mask .|. shiftMask , xK_r ), spawn $ "xmonad --recompile && xmonad --restart")
+  , ((mod4Mask, xK_s), namedScratchpadAction myScratchpads "terminal")
+  , ((mod4Mask, xK_o), namedScratchpadAction myScratchpads "obs")
   ]
 
 main :: IO ()
@@ -135,7 +145,7 @@ main = do
       { startupHook = myStartupHook
       , layoutHook = gaps [(U,35), (D,5), (R,5), (L,5)] $ myLayout ||| layoutHook myBaseConfig
       , terminal = myTerminal
-      , manageHook = manageSpawn <+> myManageHook <+> manageHook myBaseConfig
+      , manageHook = manageSpawn <+> myManageHook <+> manageHook myBaseConfig <+> namedScratchpadManageHook myScratchpads
       , modMask = myModMask
       , borderWidth = myBorderWidth
       , handleEventHook    = handleEventHook myBaseConfig <+> fullscreenEventHook
