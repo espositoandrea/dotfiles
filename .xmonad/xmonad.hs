@@ -62,6 +62,7 @@ winType  = "#c678dd"
 --shiftMask= shift key
 
 myTerminal = "urxvt"
+myBrowser = "chromium"
 myModMask = mod4Mask
 encodeCChar = map fromIntegral . B.unpack
 myFocusFollowsMouse = True
@@ -99,6 +100,7 @@ myScratchpads :: [NamedScratchpad]
 myScratchpads =
   [ NS "terminal" (myTerminal ++  " -name scratchpad")  (resource =? "scratchpad") smallRectFloating
   , NS "obs" ("obs")  (className =? "obs") mediumRectFloating
+  , NS "music" ("spotify")  (className =? "Spotify") mediumRectFloating
   ]
   where
     smallRectFloating = customFloating $ W.RationalRect (2/6) (2/6) (2/6) (2/6)
@@ -130,8 +132,13 @@ myKeys =
   [ ((mod4Mask , xK_x), spawn $ "arcolinux-logout" )
   , ((mod4Mask .|. shiftMask , xK_q ), kill)
   , ((mod4Mask .|. shiftMask , xK_r ), spawn $ "xmonad --recompile && xmonad --restart")
+  , ((mod4Mask , xK_b ), spawn myBrowser)
   , ((mod4Mask, xK_s), namedScratchpadAction myScratchpads "terminal")
   , ((mod4Mask, xK_o), namedScratchpadAction myScratchpads "obs")
+  , ((mod4Mask, xK_a), namedScratchpadAction myScratchpads "music")
+  , ((noModMask, xK_Print), spawn $ "scrot -e 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
+  , ((mod4Mask, xK_Print), spawn $ "scrot -e 'mv $f ~/Pictures'")
+  , ((mod4Mask .|. controlMask, xK_Print), spawn $ "scrot -ue 'mv $f ~/Pictures'")
   ]
 
 main :: IO ()
