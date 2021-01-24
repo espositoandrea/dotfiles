@@ -61,8 +61,9 @@ winType  = "#c678dd"
 --controlMask= ctrl key
 --shiftMask= shift key
 
-myTerminal = "urxvt"
+myTerminal = "st"
 myBrowser = "chromium"
+myFileManager = "st -e ranger"
 myModMask = mod4Mask
 encodeCChar = map fromIntegral . B.unpack
 myFocusFollowsMouse = True
@@ -98,7 +99,7 @@ myManageHook = composeAll . concat $
 
 myScratchpads :: [NamedScratchpad]
 myScratchpads =
-  [ NS "terminal" (myTerminal ++  " -name scratchpad")  (resource =? "scratchpad") smallRectFloating
+  [ NS "terminal" (myTerminal ++  " -t scratchpad")  (title =? "scratchpad") smallRectFloating
   , NS "obs" ("obs")  (className =? "obs") mediumRectFloating
   , NS "music" ("spotify")  (className =? "Spotify") mediumRectFloating
   ]
@@ -133,12 +134,14 @@ myKeys =
   , ((mod4Mask .|. shiftMask , xK_q ), kill)
   , ((mod4Mask .|. shiftMask , xK_r ), spawn $ "xmonad --recompile && xmonad --restart")
   , ((mod4Mask , xK_b ), spawn myBrowser)
+  , ((mod4Mask , xK_n ), spawn myFileManager)
   , ((mod4Mask, xK_s), namedScratchpadAction myScratchpads "terminal")
   , ((mod4Mask, xK_o), namedScratchpadAction myScratchpads "obs")
   , ((mod4Mask, xK_a), namedScratchpadAction myScratchpads "music")
   , ((noModMask, xK_Print), spawn $ "scrot -e 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
   , ((mod4Mask, xK_Print), spawn $ "scrot -e 'mv $f ~/Pictures'")
   , ((mod4Mask .|. controlMask, xK_Print), spawn $ "scrot -ue 'mv $f ~/Pictures'")
+  , ((mod4Mask .|. shiftMask , xK_l ), spawn $ "dm-lock lock")
   ]
 
 main :: IO ()
