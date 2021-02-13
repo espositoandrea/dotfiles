@@ -1,0 +1,73 @@
+#!/bin/sh
+
+DEFAULT_TRESHOLD=15
+SOUND_FILE=/usr/share/sounds/freedesktop/stereo/dialog-warning.oga 
+POLL_TIME=0.2
+
+while getopts "t:hvp:s:" options; do
+	case ${options} in
+		t)
+			treshold=${OPTARG}
+			;;
+		h)
+			printf "\
+Usage: $0 [options...]
+
+Shows an alert box when the battery percentage is under a certain treshold.
+This script should be run as a background task: it may be useful to start it
+as part of your session's start-up script.
+
+Available options:
+  -h              Show this help message.
+  -t TRESHOLD     Set the treshold for the low battery alert. The default value
+                  is $DEFAULT_TRESHOLD.
+  -v              Print the version of the program.
+  -p POLL_TIME    Set the polling time in seconds. The script will check the
+                  battery status every POLL_TIME seconds. By default, POLL_TIME
+                  is 0.2 seconds.
+  -s SOUND        Set the sound file to be played when the warning is
+                  displayed. By default, the warning sound from FreeDesktop is
+                  played (if the file exists). To avoid playing any sound, set
+                  it to the empty string ('').
+"
+			exit 0
+			;;
+		v)
+			echo "$0 -- version 1.0.0"
+			echo "Written by Andrea Esposito"
+			exit 0
+			;;
+		s)
+			[ -z $OPTARG ] && SOUND_FILE="" || SOUND_FILE=${OPTARG}
+			;;
+		p)
+			POLL_TIME=${OPTARG}
+			;;
+		*)
+			echo "Try '$0 -h' for more information" >&2
+			exit 1
+			;;
+	esac
+done
+
+treshold=${treshold:-$DEFAULT_TRESHOLD}
+notified=""
+
+while true; do
+	sleep POLL_TIME
+	battery_info=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0)
+	percentage=$(echo -e "$battery_info" | grep percentage | cut -d':' -f2 | cut -d% -f1)
+	state=$(echo -e "$battery_info" | grep state | cut -d':' -f2)
+
+	if [ $state = "discharging" ]; then
+		if [ -z $notified ] && [ $percentage -lt $treshold ]; then
+			[ -n $SOUND_FILE ] && [ -f $SOUND_FILE ] && paplay "$SOUND_FILE" &
+			notified=true
+			zenity --warning --title "Low Battery" \
+				--text "Warning: the battery percentage is below $treshold%!" \
+				--width=300 --modal
+		fi
+	elif [ $state = "charging" -o $percentage -ge $treshold ]; then
+		[ -n $notified ] && notified=""
+	fi
+done
