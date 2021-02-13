@@ -39,7 +39,7 @@ $HOME/.fehbg &
 trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 24 &
 run variety &
 run nm-applet &
-run battery-warning &
+battery-warning &
 run pamac-tray &
 run xfce4-power-manager &
 run volumeicon &

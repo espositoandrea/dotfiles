@@ -54,7 +54,7 @@ treshold=${treshold:-$DEFAULT_TRESHOLD}
 notified=""
 
 while true; do
-	sleep POLL_TIME
+	sleep $POLL_TIME
 	battery_info=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0)
 	percentage=$(echo -e "$battery_info" | grep percentage | cut -d':' -f2 | cut -d% -f1)
 	state=$(echo -e "$battery_info" | grep state | cut -d':' -f2)
