@@ -2,7 +2,12 @@ import           System.Exit
 import           System.IO
 
 import qualified Codec.Binary.UTF8.String            as UTF8
-import           XMonad
+import           XMonad hiding ((|||))
+import XMonad.Layout.LayoutCombinators
+import XMonad.Hooks.WorkspaceHistory
+import XMonad.Hooks.FadeInactive
+import XMonad.Util.WorkspaceCompare
+import XMonad.Actions.GroupNavigation
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.SpawnOn
 import           XMonad.Config.Azerty
@@ -62,16 +67,21 @@ winType  = "#c678dd"
 --shiftMask= shift key
 
 myTerminal = "st"
-myBrowser = "chromium"
+myBrowser = "brave-browser"
 myFileManager = "st -e ranger"
 myModMask = mod4Mask
 encodeCChar = map fromIntegral . B.unpack
 myFocusFollowsMouse = True
 myBorderWidth = 2
 -- myWorkspaces    = ["\61612","\61899","\61947","\61635","\61502","\61501","\61705","\61564","\62150","\61872"]
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+-- myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["main","web","music","chat","5","6","7","8","9"]
 
 myBaseConfig = desktopConfig
+
+myLogHook :: X ()
+myLogHook = fadeInactiveLogHook fadeAmount
+    where fadeAmount = 1.0
 
 -- window manipulations
 myManageHook = composeAll . concat $
@@ -133,15 +143,25 @@ myKeys =
   [ ((mod4Mask , xK_x), spawn $ "arcolinux-logout" )
   , ((mod4Mask .|. shiftMask , xK_q ), kill)
   , ((mod4Mask .|. shiftMask , xK_r ), spawn $ "xmonad --recompile && xmonad --restart")
+  , ((mod4Mask .|. shiftMask , xK_l ), spawn $ "dm-tool lock")
+  -- Apps
   , ((mod4Mask , xK_b ), spawn myBrowser)
   , ((mod4Mask , xK_n ), spawn myFileManager)
+  -- Screenshots
+  , ((noModMask, xK_Print), spawn $ "scrot -e 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
+  , ((shiftMask, xK_Print), spawn $ "sleep 0.2; scrot -sfe 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
+  , ((controlMask, xK_Print), spawn $ "scrot -ue 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
+  , ((mod4Mask, xK_Print), spawn $ "scrot -e 'mv $f ~/Pictures'")
+  , ((mod4Mask .|. controlMask, xK_Print), spawn $ "scrot -ue 'mv $f ~/Pictures'")
+  , ((mod4Mask .|. shiftMask, xK_Print), spawn $ "sleep 0.2; scrot -sfe 'mv $f ~/Pictures'")
+  -- Media Keys
+  , ((0, 0x1008FF11), spawn "amixer -q sset Master 2%-")
+  , ((0, 0x1008FF13), spawn "amixer -q sset Master 2%+")
+  , ((0, 0x1008FF12), spawn "amixer -D pulse set Master toggle")
+  -- Named Scratchpads
   , ((mod4Mask, xK_s), namedScratchpadAction myScratchpads "terminal")
   , ((mod4Mask, xK_o), namedScratchpadAction myScratchpads "obs")
   , ((mod4Mask, xK_a), namedScratchpadAction myScratchpads "music")
-  , ((noModMask, xK_Print), spawn $ "scrot -e 'mv $f /tmp && xclip -sel clip -t image/png -i /tmp/$n'")
-  , ((mod4Mask, xK_Print), spawn $ "scrot -e 'mv $f ~/Pictures'")
-  , ((mod4Mask .|. controlMask, xK_Print), spawn $ "scrot -ue 'mv $f ~/Pictures'")
-  , ((mod4Mask .|. shiftMask , xK_l ), spawn $ "dm-lock lock")
   ]
 
 main :: IO ()
@@ -150,6 +170,7 @@ main = do
   D.requestName dbus (D.busName_ "org.xmonad.Log")
       [ D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue ]
 
+  xmproc <- spawnPipe "xmobar $HOME/.xmobarrc"
   xmonad . ewmh $
     myBaseConfig
       { startupHook = myStartupHook
@@ -164,4 +185,14 @@ main = do
       , focusedBorderColor = focdBord
       , normalBorderColor = normBord
       , mouseBindings = myMouseBindings
+      , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
+                    { ppOutput = \x -> hPutStrLn xmproc x
+                    , ppCurrent = xmobarColor "#98be65" "" . wrap "[" "]" -- Current workspace
+                    , ppVisible = xmobarColor "#98be65" ""                -- Visible but not current workspace
+                    , ppHidden = xmobarColor "#82AAFF" "" -- . wrap "*" ""   -- Hidden workspaces in xmobar
+                    , ppHiddenNoWindows = xmobarColor "#c792ea" ""        -- Hidden workspaces (no windows)
+                    , ppTitle = xmobarColor "#b3afc2" "" . shorten 60     -- Title of active window in xmobar
+                    , ppSep =  "<fc=#666666> <fn=1>|</fn> </fc>"          -- Separators in xmobar
+                    , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"  -- Urgent workspace
+                    }
       } `additionalKeys` myKeys
