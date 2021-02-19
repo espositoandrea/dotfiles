@@ -1,0 +1,79 @@
+.ig
+
+lncs.tmac
+
+Copyright (C) 2021 Andrea Esposito.
+     Written by Andrea Esposito (esposito_andrea99@hotmail.com)
+
+LICENSE:
+     This macro package is considered free software. Thus it is released under
+     the GNU GPL v3 License (see https://www.gnu.org/licenses/gpl-3.0.html)
+
+USAGE:
+     To use this macro package, you must use groff.
+       This macro package is based on the ms macro package (see groff_ms)
+     extended with pdfmark (thus, it is based on the spdf.tmac macro package).
+       To activate the style, call the .LNCS macro: this will set the document
+     type to an article and will style the paper as prescribed in the template
+     for the submission to Lecture Notes in Computer Science by Springer.
+       Such macro requires, in order to print the right information, the
+     definition of the following strings and macros:
+     - STRINGS:
+       - TITLE (the document title)
+       - AUTHOR (the document author)
+       - ORCID (the document author's ORCID)
+       - KEYWORDS (the document keywords)
+     - MACROS:
+       - INSTITUTION (the author institution)
+       - ABSTRACT (the document abstract)
+..
+.if !\n(.g .ab These ms macros require groff.
+.mso spdf.tmac
+.de c
+..
+.de LNCS
+.  c PAGE FORMAT
+.  nr PO 4.4c
+.  nr LL 12.2c
+.  ie n .nr LL 20c
+.  el .nr LL 12.2c
+.  nr HM 5.2c
+.  nr FM 5.2c
+.
+.  c FONT FORMAT
+.  nr PS 10
+.  nr GROWPS 2
+.  ds FAM T
+.
+.  c HEADER/FOOTER FORMAT
+.  OH '''\\\\\\\\n(PN'
+.  EH '\\\\\\\\n(PN'''
+.
+.  c METADATA
+.  pdfinfo /Title \\*[TITLE]
+.  pdfinfo /Author \\*[AUTHOR]
+.  pdfinfo /Keywords \\*[KEYWORDS]
+.
+.  c TITLE AND HEAD
+.  TL
+.  nop \\*[TITLE]
+.  AU
+.  ft R
+.  nop \\*[AUTHOR]\*{[\\*[ORCID]]\*}
+.  ft
+.  AI
+.  INSTITUTION
+.  AB no
+.    LP
+.    B "Abstract."
+.    ABSTRACT
+.    sp
+.    LP
+.    B "Keywords:"
+.    nop \\*[KEYWORDS].
+.  AE
+..
+.de INSTITUTION
+..
+.de ABSTRACT
+..
