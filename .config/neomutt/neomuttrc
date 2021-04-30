@@ -1,0 +1,32 @@
+folder-hook 'uniba' 'source ~/.config/neomutt/uniba.muttrc'
+folder-hook 'studenti-uniba' 'source ~/.config/neomutt/studenti-uniba.muttrc'
+source ~/.config/neomutt/uniba.muttrc
+
+macro index <f2> '<sync-mailbox><enter-command>source ~/.config/neomutt/uniba.muttrc<enter><change-folder>!<enter>'
+macro index <f3> '<sync-mailbox><enter-command>source ~/.config/neomutt/studenti-uniba.muttrc<enter><change-folder>!<enter>'
+bind index G imap-fetch-mail
+
+set alias_file = "~/.config/neomutt/aliases"
+source $alias_file
+set mail_check = 30
+set move = no
+set imap_keepalive = 900
+set sort = reverse-threads
+set editor = "vim"
+set signature = "~/.config/neomutt/signature"
+
+set imap_check_subscribed = yes
+set imap_list_subscribed = yes
+
+#set sidebar_visible = yes
+set sidebar_width=20
+#set sidebar_folderindent = yes
+bind index,pager \CP sidebar-prev # Select previous folder (Ctrl+P)
+bind index,pager \CN sidebar-next # Select next folder (Ctrl+N)
+bind index,pager \CO sidebar-open # Open selected folder (Ctrl+o)
+# Ctrl+B toggles the sidebar
+macro index \CB '<enter-command>toggle sidebar_visible<enter><refresh>'
+
+source ~/.config/neomutt/dracula.muttrc
+
+macro compose K "| pandoc -so /tmp/neomutt-alternative.html<enter><attach-file>/tmp/neomutt-alternative.html<enter>"

@@ -1,0 +1,22 @@
+# vim: ft=muttrc :
+unmailboxes *
+source "gpg -qd ~/.config/neomutt/passwd/uniba.gpg |"
+
+set from = "$imap_user@uniba.it"
+set realname = "Andrea Esposito"
+
+set folder = "imaps://mail.uniba.it:993/"
+set spoolfile = +INBOX
+set postponed = +Drafts
+set trash = +Trash
+set record = +Sent
+mailboxes +INBOX
+
+set smtp_url = "smtp://$imap_user@smtp.uniba.it:587/"
+set smtp_pass = "$imap_pass"
+set ssl_starttls = yes
+set ssl_force_tls = yes
+
+set header_cache     = "~/.config/neomutt/uniba/cache/headers"
+set message_cachedir = "~/.config/neomutt/uniba/cache/bodies"
+set certificate_file = "~/.config/neomutt/uniba/certificates"
