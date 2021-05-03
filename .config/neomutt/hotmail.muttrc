@@ -1,0 +1,18 @@
+# vim: ft=muttrc :
+unmailboxes *
+source "gpg -qd ~/.config/neomutt/passwd/hotmail.gpg |"
+
+set from = "$imap_user"
+set realname = "Andrea Esposito"
+
+set folder = "imaps://outlook.office365.com:993/"
+set spoolfile = +INBOX
+set postponed = +Drafts
+set trash = +Deleted
+
+set smtp_url = "smtp://$imap_user@smtp.office365.com:587/"
+set smtp_pass = "$imap_pass"
+
+set header_cache     = "~/.config/neomutt/hotmail/cache/headers"
+set message_cachedir = "~/.config/neomutt/hotmail/cache/bodies"
+set certificate_file = "~/.config/neomutt/hotmail/certificates"
