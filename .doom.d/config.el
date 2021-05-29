@@ -1,15 +1,12 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
+;; Place your private configuration here! Remember, you do not need to run 'doom ;; sync' after modifying this file!
 (require 'rec-mode)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Andrea Esposito"
       user-mail-address "esposito_andrea99@hotmail.com")
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
 (setq gnutls-min-prime-bits 512)
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -69,17 +66,47 @@
 (display-time)
 
 (with-eval-after-load 'ox-latex
-(add-to-list 'org-latex-classes
-             '("notes"
-"\\documentclass{mynotes}
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+  (add-to-list 'org-latex-classes
+               '("notes"
+                 "\\documentclass{mynotes}
 \\usepackage[utf8]{inputenc}
 [NO-DEFAULT-PACKAGES]"
-               ("\\chapter{%s}" . "\\chapter*{%s}")
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("lncs"
+                 "\\documentclass{llncs}
+\\usepackage[utf8]{inputenc}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
+[NO-DEFAULT-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("cvpr"
+                 "\\documentclass[10pt,twocolumn,letterpaper]{article}
+\\usepackage{cvpr}
+\\usepackage{times}
+\\usepackage{epsfig}
+\\usepackage{graphicx}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+[NO-DEFAULT-PACKAGES]
+\\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
+"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
 (remove-hook! 'mu4e-compose-pre-hook #'org-msg-mode)
 ;; (add-hook! 'mu4e-compose-mode-hook #'message-mode)
@@ -89,9 +116,6 @@
                                         'delete 'sent)))
 (add-hook! 'mu4e-compose-mode-hook #'turn-on-auto-fill)
 
-(setq mu4e-get-mail-command "mbsync -a"
-      mu4e-update-interval 60
-      mu4e-index-update-in-background t)
 (setq mu4e-headers-date-format "%+4Y-%m-%d")
 (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
 (setq mu4e-context-policy 'always-ask)
@@ -104,6 +128,8 @@
     (mu4e-drafts-folder     . "/hotmail/Drafts")
     (mu4e-trash-folder      . "/hotmail/Deleted")
     (mu4e-refile-folder     . "/hotmail/Archive")
+    (mu4e-get-mail-command  . "mbsync -a")
+    (mu4e-update-interval   . 60)
     (smtpmail-smtp-user     . "esposito_andrea99@hotmail.com")
     (user-mail-address      . "esposito_andrea99@hotmail.com")    ;; only needed for mu < 1.4
     (smtpmail-stream-type   . starttls)
@@ -125,6 +151,8 @@
     (mu4e-drafts-folder     . "/uniba/Drafts")
     (mu4e-trash-folder      . "/uniba/Trash")
     (mu4e-refile-folder     . "/uniba/Archive")
+    (mu4e-get-mail-command  . "mbsync -a")
+    (mu4e-update-interval   . 60)
     (smtpmail-smtp-user     . "andrea.esposito@uniba.it")
     (user-mail-address      . "andrea.esposito@uniba.it")    ;; only needed for mu < 1.4
     (smtpmail-stream-type   . starttls)
@@ -146,6 +174,8 @@
     (mu4e-refile-folder     . "/studentiuniba/[Gmail]/Archivio")
     (mu4e-drafts-folder     . "/studentiuniba/[Gmail]/Bozze")
     (mu4e-sent-folder       . "/studentiuniba/[Gmail]/Posta inviata")
+    (mu4e-get-mail-command  . "mbsync -a")
+    (mu4e-update-interval   . 60)
     (smtpmail-smtp-user     . "a.esposito39@studenti.uniba.it")
     (user-mail-address      . "a.esposito39@studenti.uniba.it")    ;; only needed for mu < 1.4
     (smtpmail-stream-type   . starttls)
@@ -162,6 +192,8 @@
                                       "ORCID: 0000-0002-9536-3087\n"
                                       "Personal Home Page: https://espositoandrea.github.io/")))
   t)
+
+;; Telegram
 
 (defun my-telega-chat-mode ()
   (set (make-local-variable 'company-backends)
