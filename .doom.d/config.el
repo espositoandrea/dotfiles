@@ -100,7 +100,6 @@
 \\usepackage{amsmath}
 \\usepackage{amssymb}
 [NO-DEFAULT-PACKAGES]
-\\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
 "
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -220,3 +219,5 @@
 (company-posframe-mode 1)
 
 (map! :leader :desc "Open Telegram client" "o t" #'telega)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
