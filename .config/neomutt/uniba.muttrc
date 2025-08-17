@@ -17,6 +17,6 @@ set smtp_pass = "$imap_pass"
 set ssl_starttls = yes
 set ssl_force_tls = yes
 
-set header_cache     = "~/.config/neomutt/uniba/cache/headers"
-set message_cachedir = "~/.config/neomutt/uniba/cache/bodies"
-set certificate_file = "~/.config/neomutt/uniba/certificates"
+set header_cache     = "~/.cache/neomutt/uniba/headers"
+set message_cachedir = "~/.cache/neomutt/uniba/bodies"
+set certificate_file = "~/.cache/neomutt/uniba/certificates"

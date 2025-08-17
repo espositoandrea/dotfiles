@@ -15,10 +15,11 @@ set trash = +Deleted
 set smtp_url = "smtp://$imap_user@smtp.office365.com:587/"
 set smtp_pass = "$imap_pass"
 
-set header_cache     = "~/.config/neomutt/hotmail/cache/headers"
-set message_cachedir = "~/.config/neomutt/hotmail/cache/bodies"
-set certificate_file = "~/.config/neomutt/hotmail/certificates"
 set imap_authenticators = "xoauth2"
 set imap_oauth_refresh_command = "/opt/homebrew/share/neomutt/oauth2/mutt_oauth2.py $HOME/.config/neomutt/passwd/hotmail-token"
 set smtp_authenticators        = ${imap_authenticators}
 set smtp_oauth_refresh_command = ${imap_oauth_refresh_command}
+
+set header_cache     = "~/.cache/neomutt/hotmail/headers"
+set message_cachedir = "~/.cache/neomutt/hotmail/bodies"
+set certificate_file = "~/.cache/neomutt/hotmail/certificates"
