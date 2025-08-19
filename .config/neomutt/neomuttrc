@@ -8,6 +8,9 @@ macro index <f3> '<sync-mailbox><enter-command>source ~/.config/neomutt/studenti
 macro index <f4> '<sync-mailbox><enter-command>source ~/.config/neomutt/hotmail.muttrc<enter><change-folder>!<enter>' "Switch to personal account"
 bind index G imap-fetch-mail
 
+bind index,pager V  noop        ## Unbinds V from version
+macro index,pager V "<view-attachments><search>html<enter><view-mailcap><exit>"
+
 set alias_file = "~/.config/neomutt/aliases"
 source $alias_file
 set mail_check = 30
