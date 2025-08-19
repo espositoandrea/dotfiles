@@ -14,6 +14,7 @@ set mail_check = 30
 set move = no
 set imap_keepalive = 900
 set sort = reverse-threads
+set sort_aux=last-date-received
 set editor = "vim"
 set signature = "~/.config/neomutt/signature"
 
