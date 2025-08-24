@@ -35,3 +35,6 @@ yabai -m rule --add app="^Impostazioni di Sistema$" manage=off
 
 yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Calcolatrice$" manage=off
+
+# iTerm2 Hotekey Window is English-only
+yabai -m rule --add app="^iTerm2$" title="^Hotkey Window" manage=off
