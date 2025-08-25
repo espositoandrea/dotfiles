@@ -27,7 +27,7 @@ set sidebar_width=20
 #set sidebar_folderindent = yes
 bind index,pager \CP sidebar-prev # Select previous folder (Ctrl+P)
 bind index,pager \CN sidebar-next # Select next folder (Ctrl+N)
-bind index,pager \CO sidebar-open # Open selected folder (Ctrl+o)
+bind index,pager \CL sidebar-open # Open selected folder (Ctrl+o)
 # Ctrl+B toggles the sidebar
 macro index \CB '<enter-command>toggle sidebar_visible<enter><refresh>'
 
