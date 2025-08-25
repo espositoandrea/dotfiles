@@ -1,11 +1,9 @@
 folder-hook 'uniba' 'source ~/.config/neomutt/uniba.muttrc'
-folder-hook 'studenti-uniba' 'source ~/.config/neomutt/studenti-uniba.muttrc'
 folder-hook 'hotmail' 'source ~/.config/neomutt/hotmail.muttrc'
 source ~/.config/neomutt/uniba.muttrc
 
 macro index <f2> '<sync-mailbox><enter-command>source ~/.config/neomutt/uniba.muttrc<enter><change-folder>!<enter>' "Switch to UniBa account"
-macro index <f3> '<sync-mailbox><enter-command>source ~/.config/neomutt/studenti-uniba.muttrc<enter><change-folder>!<enter>' "Switch to UniBa (Students) account"
-macro index <f4> '<sync-mailbox><enter-command>source ~/.config/neomutt/hotmail.muttrc<enter><change-folder>!<enter>' "Switch to personal account"
+macro index <f3> '<sync-mailbox><enter-command>source ~/.config/neomutt/hotmail.muttrc<enter><change-folder>!<enter>' "Switch to personal account"
 bind index G imap-fetch-mail
 
 bind index,pager V  noop        ## Unbinds V from version
