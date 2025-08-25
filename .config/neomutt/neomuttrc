@@ -33,6 +33,6 @@ bind index,pager \CO sidebar-open # Open selected folder (Ctrl+o)
 # Ctrl+B toggles the sidebar
 macro index \CB '<enter-command>toggle sidebar_visible<enter><refresh>'
 
-source ~/.config/neomutt/dracula.muttrc
+source ~/.config/neomutt/dracula/dracula.muttrc
 
 macro compose K "| pandoc -so /tmp/neomutt-alternative.html<enter><attach-file>/tmp/neomutt-alternative.html<enter>"
