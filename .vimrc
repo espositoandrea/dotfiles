@@ -1,3 +1,7 @@
+set term=xterm-256color
+filetype plugin indent on
+syntax on
+
 set modeline
 set tabstop=4
 set shiftwidth=4
