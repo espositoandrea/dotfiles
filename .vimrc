@@ -31,20 +31,22 @@ map <C-l> <C-w>l
 vnoremap < <gv
 vnoremap > >gv
 
-" When
-
 " Plugins
 call plug#begin()
 	" Plug 'vim-latex/vim-latex'
-	Plug 'lervag/vimtex'
+	" Plug 'lervag/vimtex'
+	Plug 'preservim/nerdtree'
 	Plug 'junegunn/goyo.vim'
+	Plug 'christoomey/vim-tmux-navigator'
 	Plug 'vim-airline/vim-airline'
 	Plug 'dracula/vim', { 'as': 'dracula' }
-	Plug 'ap/vim-css-color'
-	Plug 'mattn/emmet-vim'
-	Plug 'preservim/nerdcommenter'
-	Plug 'joom/latex-unicoder.vim'
-	Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+	" Plug 'ap/vim-css-color'
+	" Plug 'mattn/emmet-vim'
+	" Plug 'preservim/nerdcommenter'
+	" Plug 'joom/latex-unicoder.vim'
+	" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+	" Plug 'kaarmu/typst.vim'
+	Plug 'zaid/vim-rec'
 call plug#end()
 
 colorscheme dracula
@@ -73,3 +75,12 @@ autocmd! User GoyoLeave nested set background=dark
 
 " Fix for transparent background with dracula theme
 hi Normal guibg=NONE ctermbg=NONE
+
+
+" NERD TREE OPTIONS
+" Open at vim start
+" autocmd vimenter * NERDTree
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:stdn_in") | NERDTree | endif
+" ---> toggling nerd-tree using Ctrl-N <---
+map <C-n> :NERDTreeToggle<CR>
