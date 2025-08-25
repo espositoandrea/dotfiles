@@ -36,3 +36,8 @@ source ~/.config/neomutt/dracula/dracula.muttrc
 macro compose K "| pandoc -so /tmp/neomutt-alternative.html<enter><attach-file>/tmp/neomutt-alternative.html<enter><toggle-disposition><toggle-unlink><tag-entry><previous-entry><tag-entry><group-alternatives>"
 
 set text_flowed
+
+set print=ask-yes
+set print_command="paps --font 'Monospace 10' | lp"
+
+macro pager \cp "<pipe-entry>paps --format pdf --font 'Monospace 10' | zathura -<enter>"
