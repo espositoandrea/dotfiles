@@ -9,8 +9,13 @@ bind index G imap-fetch-mail
 bind index,pager V  noop        ## Unbinds V from version
 macro index,pager V "<view-attachments><search>html<enter><view-mailcap><exit>"
 
-set alias_file = "~/.config/neomutt/aliases"
-source $alias_file
+# When looking for contacts, use this command
+set query_command= "abook --mutt-query '%s'"
+# Add current sender to address book
+macro index,pager  a "<pipe-message>abook --add-email-quiet<return>" "Add this sender to Abook"
+# Auto-complete email addresses by pushing tab
+bind editor <Tab> complete-query
+
 set mail_check = 30
 set move = no
 set imap_keepalive = 900
