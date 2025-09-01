@@ -36,7 +36,7 @@ shift + alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
 shift + alt - m : yabai -m window --toggle zoom-fullscreen
 
 # balance out tree of windows (resize to occupy same area)
-shift + alt - e : yabai -m space --balance
+ctrl + shift + alt - e : yabai -m space --balance
 
 # swap windows
 shift + alt - j : yabai -m window --swap south
