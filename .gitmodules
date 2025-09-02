@@ -1,3 +1,6 @@
 [submodule ".config/neomutt/dracula"]
 	path = .config/neomutt/dracula
 	url = https://github.com/dracula/mutt.git
+[submodule ".config/emacs"]
+	path = .config/emacs
+	url = https://github.com/doomemacs/doomemacs
