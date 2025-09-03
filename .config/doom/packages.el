@@ -9,7 +9,6 @@
 ;; (package! some-package)
 (package! web-mode)
 (package! emmet-mode)
-(package! ox-pandoc)
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
@@ -52,7 +51,6 @@
 ;; (unpin! t)
 (package! org-mime)
 (package! org-ref)
-(package! pdf-tools)
 (package! smart-tabs-mode)
 (package! org-msg :disable t)
 (package! telega)
