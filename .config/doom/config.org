@@ -1,44 +1,83 @@
+#+TITLE: Doom Emacs Config
+#+AUTHOR: Andrea Esposito
+#+PROPERTY: header-args :tangle yes :comments both
+
+* Table of Contents :TOC:
+- [[#introduction][Introduction]]
+- [[#basic-variables-and-configs][Basic Variables and Configs]]
+  - [[#themes][Themes]]
+- [[#org-mode][Org Mode]]
+  - [[#latex-export][LaTeX Export]]
+- [[#additional-stuff][Additional Stuff]]
+- [[#mail-mu4e][Mail (mu4e)]]
+  - [[#accounts-setup][Accounts Setup]]
+- [[#telegram][Telegram]]
+
+* Introduction
+#+BEGIN_INFO
+The content of this documentation comes directly from Doom Emacs' default configuration's comments.
+#+END_INFO
+
+#+BEGIN_SRC elisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
+#+END_SRC
 
 
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets. It is optional.
+* Basic Variables and Configs
+Place your private configuration here! Remember, you do not need to run 'doom
+sync' after modifying this file!
+#+BEGIN_SRC elisp
+(add-to-list 'default-frame-alist '(undecorated-round . t))
+#+END_SRC
+
+
+Some functionality uses this to identify you, e.g. GPG configuration, email
+clients, file templates and snippets. It is optional.
+#+BEGIN_SRC elisp
 (setq user-full-name "Andrea Esposito"
       user-mail-address "esposito_andrea99@hotmail.com")
 (setq gnutls-min-prime-bits 512)
+#+end_src
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom:
-;;
-;; - `doom-font' -- the primary font to use
-;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
-;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;; - `doom-symbol-font' -- for symbols
-;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
-;;
-;; See 'C-h v doom-font' for documentation and more examples of what they
-;; accept. For example:
-;;
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
-;;
-;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
-;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
-;; refresh your font settings. If Emacs still can't find your font, it likely
-;; wasn't installed correctly. Font issues are rarely Doom issues!
+** Themes
+ Doom exposes five (optional) variables for controlling fonts in Doom:
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
+ - `doom-font' -- the primary font to use
+ - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+ - `doom-big-font' -- used for `doom-big-font-mode'; use this for
+   presentations or streaming.
+ - `doom-symbol-font' -- for symbols
+ - `doom-serif-font' -- for the `fixed-pitch-serif' face
+
+ See 'C-h v doom-font' for documentation and more examples of what they
+ accept. For example:
+
+#+BEGIN_SRC elisp
+;; (setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+#+END_SRC
+
+ If you or Emacs can't find your font, use 'M-x describe-font' to look them
+ up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
+ refresh your font settings. If Emacs still can't find your font, it likely
+ wasn't installed correctly. Font issues are rarely Doom issues!
+
+There are two ways to load a theme. Both assume the theme is installed and
+available. You can either set `doom-theme' or manually load a theme with the
+`load-theme' function. The default is =doom-one=.
+
+#+begin_src elisp
 (setq doom-theme 'doom-dracula)
+#+end_src
 
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+This determines the style of line numbers in effect. If set to `nil', line
+numbers are disabled. For absolute line numbers, set this to `t'. For relative line numbers, set this to `relative'.
+#+begin_src elisp
+(setq display-line-numbers-type 'relative)
+#+end_src
 
+* Org Mode
+#+begin_src elisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org")
@@ -79,13 +118,11 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-(require 'ox-pandoc)
 (require 'org-ref)
+#+END_SRC
 
-(display-battery-mode t)
-(setq display-time-string-forms '(year "." month "." day " " 24-hours ":" minutes))
-(display-time)
-
+** LaTeX Export
+#+BEGIN_SRC elisp
 (with-eval-after-load 'ox-latex
   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
   (add-to-list 'org-latex-classes
@@ -127,22 +164,39 @@
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+#+end_src
 
-(remove-hook! 'mu4e-compose-pre-hook #'org-msg-mode)
+* Additional Stuff
+#+BEGIN_SRC elisp
+(display-battery-mode t)
+(setq display-time-string-forms '(year "." month "." day " " 24-hours ":" minutes))
+(display-time)
+#+END_src
+
+* Mail (mu4e)
+#+BEGIN_SRC elisp
+;; (remove-hook! 'mu4e-compose-pre-hook #'org-msg-mode)
 ;; (add-hook! 'mu4e-compose-mode-hook #'message-mode)
-(setq mm-sign-option 'guided)
-(setq mu4e-sent-messages-behavior (lambda ()
-                                    (if (string= (message-sendmail-envelope-from) "a.esposito39@studenti.uniba.it")
-                                        'delete 'sent)))
-(add-hook! 'mu4e-compose-mode-hook #'turn-on-auto-fill)
+;; (setq mm-sign-option 'guided)
+;; (setq mu4e-sent-messages-behavior (lambda ()
+                                    ;; (if (string= (message-sendmail-envelope-from) "a.esposito39@studenti.uniba.it")
+                                        ;; 'delete 'sent)))
+;; (add-hook! 'mu4e-compose-mode-hook #'turn-on-auto-fill)
 
-(setq mu4e-headers-date-format "%+4Y-%m-%d")
-(setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
-(setq mu4e-context-policy 'always-ask)
-(add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
-(setq mu4e-maildir-shortcuts '(("/studentiuniba/Inbox" . ?s)
-                               ("/uniba/Inbox" . ?u)
-                               ("/hotmail/Inbox" . ?h)))
+;; (setq mu4e-headers-date-format "%+4Y-%m-%d")
+;; (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
+;; (setq mu4e-context-policy 'always-ask)
+;; (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
+;; (setq mu4e-maildir-shortcuts '(("/studentiuniba/Inbox" . ?s)
+                               ;; ("/uniba/Inbox" . ?u)
+                               ;; ("/hotmail/Inbox" . ?h)))
+#+END_SRC
+
+** Accounts Setup
+*** Personal Account (Hotmail/Outlook)
+#+BEGIN_SRC elisp :tangle no
 (set-email-account! "Hotmail"
   '((mu4e-sent-folder       . "/hotmail/Sent")
     (mu4e-drafts-folder     . "/hotmail/Drafts")
@@ -166,6 +220,9 @@
                                       "ORCID: 0000-0002-9536-3087\n"
                                       "Personal Home Page: https://espositoandrea.github.io/")))
   t)
+#+END_SRC
+*** Work Account (University of Bari)
+#+BEGIN_SRC elisp :tangle no
 (set-email-account! "UniBa"
   '((mu4e-sent-folder       . "/uniba/Sent")
     (mu4e-drafts-folder     . "/uniba/Drafts")
@@ -189,6 +246,9 @@
                                       "ORCID: 0000-0002-9536-3087\n"
                                       "Personal Home Page: https://espositoandrea.github.io/")))
   t)
+#+END_SRC
+*** University Account (Student) [OLD]
+#+BEGIN_SRC elisp :tangle no
 (set-email-account! "Studenti UniBa"
   '((mu4e-trash-folder      . "/studentiuniba/[Gmail]/Cestino")
     (mu4e-refile-folder     . "/studentiuniba/[Gmail]/Archivio")
@@ -213,8 +273,11 @@
                                       "Personal Home Page: https://espositoandrea.github.io/")))
   t)
 
-;; Telegram
+#+END_SRC
 
+* Telegram
+The Telegram config is currently /disabled/ since I don't need it for now...
+#+BEGIN_SRC elisp :tangle no
 (defun my-telega-chat-mode ()
   (set (make-local-variable 'company-backends)
        (append (list 'telega-company-emoji
@@ -240,5 +303,4 @@
 (company-posframe-mode 1)
 
 (map! :leader :desc "Open Telegram client" "o t" #'telega)
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
+#+end_src

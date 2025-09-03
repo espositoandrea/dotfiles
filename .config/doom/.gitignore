@@ -1,0 +1,2 @@
+# Ignore output of tangling literate programming files (org-mode)
+config.el
