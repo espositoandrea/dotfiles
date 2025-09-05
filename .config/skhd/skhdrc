@@ -71,3 +71,7 @@ shift + alt - 7 : yabai -m window --space 7;
 ctrl + alt - q : yabai --stop-service
 ctrl + alt - s : yabai --start-service
 ctrl + alt - r : yabai --restart-service
+
+# Open a Terminal on key press
+cmd + ctrl - return : open -a iTerm.app
+cmd + ctrl + alt - return : open -a "/Applications/Emacs (Client).app"
