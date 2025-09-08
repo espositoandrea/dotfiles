@@ -178,6 +178,11 @@ they are implemented.
 (setq org-html-htmlize-output-type 'css)
 #+END_SRC
 
+I prefer tags to be aligned to the right.
+#+BEGIN_SRC elisp
+(setq org-tags-column (- fill-column))
+#+END_SRC
+
 ** Allowing Citations
 This package allows citing from BibTeX. We must install it first...
 #+BEGIN_SRC elisp :tangle packages.el
