@@ -14,6 +14,7 @@
   - [[#using-org-mode][Using Org-Mode]]
   - [[#accounts-setup][Accounts Setup]]
 - [[#telegram][Telegram]]
+- [[#olivetti-mode][Olivetti mode]]
 
 * Introduction
 #+BEGIN_INFO
@@ -411,3 +412,12 @@ This is my configuration.
 
 (map! :leader :desc "Open Telegram client" "o t" #'telega)
 #+end_src
+
+* Olivetti mode
+#+BEGIN_SRC elisp :tangle packages.el
+(package! olivetti)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(map! :leader :desc "Toggle Olivetti mode" "t o"  #'olivetti-mode)
+#+END_SRC
