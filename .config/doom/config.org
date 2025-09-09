@@ -385,7 +385,7 @@ This package allows citing from BibTeX. We must install it first...
 * Telegram
 The Telegram config is currently /disabled/ since I don't need it for now...
 To use it, one should first install this package:
-#+BEGIN_SRC elisp :tangle no packages.el
+#+BEGIN_SRC elisp :tangle no
 (package! telega)
 #+END_SRC
 
