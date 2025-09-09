@@ -15,6 +15,7 @@
   - [[#accounts-setup][Accounts Setup]]
 - [[#telegram][Telegram]]
 - [[#olivetti-mode][Olivetti mode]]
+- [[#screenwriting-fountain-mode][Screenwriting (=fountain-mode=)]]
 
 * Introduction
 #+BEGIN_INFO
@@ -425,4 +426,32 @@ This is my configuration.
 
 #+BEGIN_SRC elisp
 (map! :leader :desc "Toggle Olivetti mode" "t o"  #'olivetti-mode)
+#+END_SRC
+
+* Screenwriting (=fountain-mode=)
+I do not typically screenwrite. However, sometimes it is useful to typeset something so that it /looks like/ a script. As an example, I often find myself transcribing interviews for research purposes and later analysis: typesetting it as a script allows for a "pleasurable" on-paper analysis, while using a "standard" markup language allows to easily parse it for usage in code.
+
+A markup language for screenwriters if [[https://fountain.io][Fountain]].  To use within Emacs, one must install =fountain-mode=.
+
+#+BEGIN_SRC elisp :tangle packages.el
+(package! fountain-mode)
+#+END_SRC
+
+I can then simplify exporting to other formats by defining some mode-specific key bindings to be used instead of =C-c= stuff (I always forget those).
+
+#+BEGIN_SRC elisp
+(map! :after fountain-mode
+      :map fountain-mode-map
+      :localleader
+      :prefix ("e" . "export")
+
+      :desc "Export Fountain file"
+      "e" #'fountain-export-command)
+(map! :after fountain-mode
+      :map fountain-mode-map
+      :localleader
+      :prefix ("e" . "export")
+
+      :desc "Export to PDF using Troff"
+      "t" #'fountain-export-troff)
 #+END_SRC
