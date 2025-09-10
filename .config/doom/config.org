@@ -17,6 +17,7 @@
 - [[#telegram][Telegram]]
 - [[#olivetti-mode][Olivetti mode]]
 - [[#screenwriting-fountain-mode][Screenwriting (=fountain-mode=)]]
+- [[#latex][LaTeX]]
 
 * Introduction
 #+BEGIN_INFO
@@ -468,3 +469,9 @@ I can then simplify exporting to other formats by defining some mode-specific ke
       :desc "Export to PDF using Troff"
       "t" #'fountain-export-troff)
 #+END_SRC
+
+* LaTeX
+This line fixes an issue with Emacs < 30 that prevented AucTeX from working correctly with Doom Emacs. I have no idea about why, but this solution came up [[https://discourse.doomemacs.org/t/auctex-and-latex-mode/4901/3][online]]...
+#+begin_src emacs-lisp :tangle yes
+(setq major-mode-remap-alist major-mode-remap-defaults)
+#+end_src
