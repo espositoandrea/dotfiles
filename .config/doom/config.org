@@ -6,6 +6,7 @@
 - [[#introduction][Introduction]]
 - [[#basic-variables-and-configs][Basic Variables and Configs]]
   - [[#themes][Themes]]
+  - [[#fix-evil-mode-navigation][Fix EVIL mode navigation]]
 - [[#org-mode][Org Mode]]
   - [[#allowing-citations][Allowing Citations]]
   - [[#latex-export][LaTeX Export]]
@@ -166,6 +167,18 @@ Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
 etc).
 You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 they are implemented.
+
+** Fix EVIL mode navigation
+For some reasons, =g j=, =g k=, etc. do not work (especially in Org-Mode) due to some clash with other shortcuts, and I should use =g <up>=, =g <down>=. This is really not confortable. Instead of trying and finding /where/ the clash is, it's just easier to remap the bindings to use visual lines.
+#+begin_src elisp
+(map!
+ :nvm "k"   #'evil-previous-visual-line
+ :o   "k"   #'evil-previous-line
+ :nvm "j" #'evil-next-visual-line
+ :o   "j" #'evil-next-line
+ :nvm "<home>" #'evil-beginning-of-visual-line
+ :nvm "<end>"  #'evil-end-of-visual-line)
+#+end_src
 
 * Org Mode
 #+begin_src elisp
