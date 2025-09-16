@@ -11,6 +11,7 @@
   - [[#allowing-citations][Allowing Citations]]
   - [[#latex-export][LaTeX Export]]
   - [[#org-mode-babel][Org-Mode Babel]]
+  - [[#org-capture-templates][Org Capture Templates]]
 - [[#additional-stuff][Additional Stuff]]
 - [[#mail-mu4e][Mail (mu4e)]]
   - [[#using-org-mode][Using Org-Mode]]
@@ -281,6 +282,25 @@ This package allows citing from BibTeX. We must install it first...
     '((mermaid . t)
       (scheme . t)
       (your-other-langs . t)))
+#+END_SRC
+
+** Org Capture Templates
+
+I was fine with Doom Emacs' default templates, until I was not. I liked the overall settings, but I did not find confortable to use different files that all behave like an inbox, and it felt "wrong" to mix unprocessed inbox elements with processed tasks (e.g., in the =projects.org= file). Here I try to set everything up using only a single file =inbox.org=.
+
+For this purpose, we start by defining a "common inbox" file name (this is used to simplify any editing if I need it in the future).
+#+BEGIN_SRC elisp
+(setq +org-capture-common-inbox-file "inbox.org")
+#+END_SRC
+
+We then assign all Doom Emacs' =org-capture= variables the value of the common inbox file name.
+#+BEGIN_SRC elisp
+(setq +org-capture-todo-file +org-capture-common-inbox-file)
+(setq +org-capture-changelog-file +org-capture-common-inbox-file)
+(setq +org-capture-notes-file +org-capture-common-inbox-file)
+;; I like the journal file to be kept separate
+;; (setq +org-capture-journal-file +org-capture-common-inbox-file)
+(setq +org-capture-projects-file +org-capture-common-inbox-file)
 #+END_SRC
 
 * Additional Stuff
