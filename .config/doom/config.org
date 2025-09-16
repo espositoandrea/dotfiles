@@ -20,6 +20,8 @@
 - [[#olivetti-mode][Olivetti mode]]
 - [[#screenwriting-fountain-mode][Screenwriting (=fountain-mode=)]]
 - [[#latex][LaTeX]]
+- [[#python][Python]]
+  - [[#ruff-and-ruff-language-server][Ruff and Ruff Language Server]]
 
 * Introduction
 #+BEGIN_INFO
@@ -522,4 +524,14 @@ I can then simplify exporting to other formats by defining some mode-specific ke
 This line fixes an issue with Emacs < 30 that prevented AucTeX from working correctly with Doom Emacs. I have no idea about why, but this solution came up [[https://discourse.doomemacs.org/t/auctex-and-latex-mode/4901/3][online]]...
 #+begin_src emacs-lisp :tangle yes
 (setq major-mode-remap-alist major-mode-remap-defaults)
+#+end_src
+
+* Python
+** Ruff and Ruff Language Server
+#+begin_src elisp
+(add-hook 'python-mode-hook 'eglot-ensure)
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("ruff" "server")))
+  (add-hook 'after-save-hook 'eglot-format))
 #+end_src
