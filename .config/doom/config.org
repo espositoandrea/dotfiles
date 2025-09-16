@@ -10,6 +10,7 @@
 - [[#org-mode][Org Mode]]
   - [[#allowing-citations][Allowing Citations]]
   - [[#latex-export][LaTeX Export]]
+  - [[#org-mode-babel][Org-Mode Babel]]
 - [[#additional-stuff][Additional Stuff]]
 - [[#mail-mu4e][Mail (mu4e)]]
   - [[#using-org-mode][Using Org-Mode]]
@@ -266,6 +267,21 @@ This package allows citing from BibTeX. We must install it first...
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 (setq org-latex-listings 'minted)
 #+end_src
+
+** Org-Mode Babel
+*** Additional Languages
+**** Mermaid for charts
+#+BEGIN_SRC elisp :tangle packages.el
+(package! ob-mermaid)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(org-babel-do-load-languages
+    'org-babel-load-languages
+    '((mermaid . t)
+      (scheme . t)
+      (your-other-langs . t)))
+#+END_SRC
 
 * Additional Stuff
 #+BEGIN_SRC elisp
