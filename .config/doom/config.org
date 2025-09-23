@@ -12,6 +12,7 @@
   - [[#latex-export][LaTeX Export]]
   - [[#org-mode-babel][Org-Mode Babel]]
   - [[#org-capture-templates][Org Capture Templates]]
+  - [[#writing-letters][Writing Letters]]
 - [[#additional-stuff][Additional Stuff]]
 - [[#mail-mu4e][Mail (mu4e)]]
   - [[#using-org-mode][Using Org-Mode]]
@@ -303,6 +304,17 @@ We then assign all Doom Emacs' =org-capture= variables the value of the common i
 ;; I like the journal file to be kept separate
 ;; (setq +org-capture-journal-file +org-capture-common-inbox-file)
 (setq +org-capture-projects-file +org-capture-common-inbox-file)
+#+END_SRC
+** Writing Letters
+#+BEGIN_SRC elisp :tangle packages.el
+(package! ox-koma-letter :recipe
+  (:host github
+   :repo "bzg/org-mode"
+   :files ("lisp/ox-koma-letter.el")))
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(eval-after-load 'ox '(require 'ox-koma-letter))
 #+END_SRC
 
 * Additional Stuff
