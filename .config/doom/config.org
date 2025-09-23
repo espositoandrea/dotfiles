@@ -273,6 +273,28 @@ This class uses CEUR-WS =ceurart= class (requires LaTeX =.cls= file in the same 
                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+END_SRC
+**** APA
+This class uses APA compliant styles.
+#+BEGIN_SRC elisp
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("apa"
+                 "\\documentclass{apa7}
+\\usepackage{xcolor}
+\\usepackage{amsmath,amsthm,amssymb}
+\\newtheorem{definition}{Definition}
+[DEFAULT-PACKAGES]
+[EXTRA]
+\\usepackage{cleveref}
+%\\usepackage{abstract}
+\\hypersetup{colorlinks=true,allcolors=blue}
+"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
 **** CVPR
 This class uses CVPR compliant styles.
 #+BEGIN_SRC elisp
