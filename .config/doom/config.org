@@ -214,9 +214,19 @@ This package allows citing from BibTeX. We must install it first...
 #+END_SRC
 
 ** LaTeX Export
+This sets the LaTeX compiler to use latexmk and use =minted= to colorize source code listings.
 #+BEGIN_SRC elisp
-(with-eval-after-load 'ox-latex
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+(after! 'ox-latex
+  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+#+END_SRC
+
+*** Custom LaTeX Classes
+**** Personal Notes
+This class is heavily inspired by O'Reilly books (requires LaTeX =.cls= file in the same directory of the =.org= file). I usually use it for personal notes (for example, I used it for writing notes during AI courses).
+#+BEGIN_SRC elisp
+(after! ox-latex
   (add-to-list 'org-latex-classes
                '("notes"
                  "\\documentclass{mynotes}
@@ -227,7 +237,12 @@ This package allows citing from BibTeX. We must install it first...
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
+**** Springer LNCS
+This class uses Springer LNCS class (requires LaTeX =.cls= file in the same directory of the =.org= file).
+#+BEGIN_SRC elisp
+(after! ox-latex
   (add-to-list 'org-latex-classes
                '("lncs"
                  "\\documentclass{llncs}
@@ -239,7 +254,12 @@ This package allows citing from BibTeX. We must install it first...
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
+**** CEUR-WS
+This class uses CEUR-WS =ceurart= class (requires LaTeX =.cls= file in the same directory of the =.org= file).
+#+BEGIN_SRC elisp
+(after! ox-latex
   (add-to-list 'org-latex-classes
                  '("ceurart" "\\documentclass{ceurart}
 \\usepackage[utf8]{inputenc}
@@ -251,7 +271,12 @@ This package allows citing from BibTeX. We must install it first...
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
+**** CVPR
+This class uses CVPR compliant styles.
+#+BEGIN_SRC elisp
+(after! ox-latex
   (add-to-list 'org-latex-classes
                '("cvpr"
                  "\\documentclass[10pt,twocolumn,letterpaper]{article}
@@ -268,9 +293,7 @@ This package allows citing from BibTeX. We must install it first...
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
-#+end_src
+#+END_SRC
 
 ** Org-Mode Babel
 *** Additional Languages
