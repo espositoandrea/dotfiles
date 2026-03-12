@@ -424,7 +424,7 @@ I was fine with Doom Emacs' default templates, until I was not. I liked the over
 
 For this purpose, we start by defining a "common inbox" file name (this is used to simplify any editing if I need it in the future).
 #+BEGIN_SRC elisp
-(setq +org-capture-common-inbox-file "inbox.org")
+(setq +org-capture-common-inbox-file "~/Documents/Org/inbox.org")
 #+END_SRC
 
 We then assign all Doom Emacs' =org-capture= variables the value of the common inbox file name.
