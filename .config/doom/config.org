@@ -223,6 +223,11 @@ I prefer tags to be aligned to the right.
 (setq org-tags-column (- fill-column))
 #+END_SRC
 
+This automatically sets =.org_archive= files as =org-mode= files, regardless of the presence (or absence) of a mode line.
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+#+end_src
+
 ** Allowing Citations
 This package allows citing from BibTeX. We must install it first...
 #+BEGIN_SRC elisp :tangle packages.el
