@@ -372,6 +372,7 @@ This class uses APA compliant styles.
 [EXTRA]
 \\usepackage{cleveref}
 %\\usepackage{abstract}
+\\usepackage{hyperref}
 \\hypersetup{colorlinks=true,allcolors=blue}
 "
                  ("\\section{%s}" . "\\section*{%s}")
