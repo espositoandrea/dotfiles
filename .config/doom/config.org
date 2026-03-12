@@ -763,3 +763,130 @@ This line fixes an issue with Emacs < 30 that prevented AucTeX from working corr
                '(python-mode . ("ruff" "server")))
   (add-hook 'after-save-hook 'eglot-format))
 #+end_src
+
+* RSS Reader
+#+BEGIN_SRC elisp :tangle packages.el
+(package! elfeed)
+(package! elfeed-goodies)
+(package! elfeed-org)
+(package! elfeed-tube)
+(package! elfeed-tube-mpv)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(require 'elfeed-goodies)
+(elfeed-goodies/setup)
+(require 'elfeed-org)
+(elfeed-org)
+(add-hook! 'elfeed-search-mode-hook #'elfeed-update)
+#+END_SRC
+
+#+BEGIN_SRC elisp
+(use-package! elfeed
+  :commands elfeed
+  :init
+  (map! :leader
+    (:prefix ("o" . "open")
+      :desc "Open elfeed" "e" #'elfeed)))
+(after! elfeed
+  (map! :map elfeed-search-mode-map
+        :localleader
+        :desc "Elfeed update" "r" #'elfeed-update))
+(use-package! elfeed-web
+    :defer t
+    :commands elfeed-web-stop)
+
+(map! :after elfeed-search
+      :map elfeed-search-mode-map
+      [remap kill-this-buffer] "q"
+    [remap kill-buffer] "q"
+    :n "q" #'elfeed-kill-buffer
+)
+#+END_SRC
+
+* Accounting Software
+To manage my money, I use =hledger=. To edit the journal file without leaving Emacs, I use =ledger-mode= (I prefer it to =hledger-mode=).
+
+I leverage the script provided in the [[https://hledger.org/editors.html#hledger-mode][=hledger= documentation]] to fully make this functional.
+
+#+begin_src shell :tangle hledger.sh :shebang "#!/bin/sh"
+# hledger.sh
+# Kudos to acarrico for the original script.
+
+# The script is contingent on ledger-default-date-string
+# being set to "%Y-%m-%d", aka ISO date format.
+
+iargs=("$@")
+oargs=()
+j=0;
+date=;
+for((i=0; i<${#iargs[@]}; ++i)); do
+    case ${iargs[i]} in
+        --date-format)
+            # drop --date-format and the next arg
+            i=$((i+1));
+            ;;
+        cleared) # for ledger-di
+            splay-balance-at-point
+            # convert "cleared" to "balance -N -C"
+            oargs[j]=balance; oargs[j+1]=-N; oargs[j+2]=-C; j=$((j+3));
+            ;;
+        xact)
+            # convert "xact" to "print --match"
+            oargs[j]=print; oargs[j+1]=--match; j=$((j+2));
+            # drop xact argument and stash the date argument
+            i=$((i+1));
+            date=${iargs[i]};
+            ;;
+        # NOTE: Reconciliation still doesn't work for other reasons
+        #       so the following filters/conversions are unnecessary for now.
+        # --sort) # for reconcilliation
+        #     # drop --sort and the next arg
+        #     i=$((i+1));
+        #     ;;
+        # --uncleared) # for reconcilliation
+        #     # convert "--uncleared" to "--unmarked --pending"
+        #     oargs[j]=--unmarked; oargs[j+1]=--pending; j=$((j+2))
+        #     ;;
+        *)
+            # keep any other args:
+            oargs[j]=${iargs[i]};
+            j=$((j+1));
+            ;;
+    esac
+done
+
+if test "$date"
+then
+    # substitute the given date for the old date:
+    hledger "${oargs[@]}" | sed "1s/....-..-../$date/"
+else
+    # echo "${oargs[@]}"
+    hledger "${oargs[@]}"
+fi
+#+end_src
+
+
+#+begin_src sh
+realpath hledger.sh
+#+end_src
+
+#+NAME: hledger-script-file-path
+#+RESULTS:
+: /Users/andreaesposito/.config/doom/hledger.sh
+
+
+To make =ledger-mode= compatible with =hledger= I need to change the default date format.
+
+#+begin_src elisp :var hledger_script_path=hledger-script-file-path
+(use-package! ledger-mode
+  :custom
+  ((ledger-binary-path "hledger")
+   (ledger-mode-should-check-version nil)
+   (ledger-report-auto-width nil)
+   (ledger-report-links-in-register nil)
+   (ledger-report-native-highlighting-arguments '("--color=always")))
+  :mode ("\\.hledger\\.journal\\'" . ledger-mode))
+(setq ledger-default-date-format "%Y-%m-%d")
+(setq ledger-binary-path hledger_script_path)
+#+end_src
