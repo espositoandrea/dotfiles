@@ -219,6 +219,7 @@ Additionally, I want to use the left "option" key as "meta" and the right one as
 
 I prefer tags to be aligned to the right.
 #+BEGIN_SRC elisp
+(setq fill-column 80)
 (setq org-tags-column (- fill-column))
 #+END_SRC
 
