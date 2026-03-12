@@ -7,12 +7,16 @@
 - [[#basic-variables-and-configs][Basic Variables and Configs]]
   - [[#themes][Themes]]
   - [[#fix-evil-mode-navigation][Fix EVIL mode navigation]]
+  - [[#macos-specific-stuff][macOS specific stuff]]
 - [[#org-mode][Org Mode]]
+  - [[#obsidian][Obsidian]]
   - [[#allowing-citations][Allowing Citations]]
   - [[#latex-export][LaTeX Export]]
   - [[#org-mode-babel][Org-Mode Babel]]
   - [[#org-capture-templates][Org Capture Templates]]
   - [[#writing-letters][Writing Letters]]
+  - [[#custom-tood-states][Custom TOOD states]]
+  - [[#system-wide-org-capture][System-Wide Org Capture]]
 - [[#additional-stuff][Additional Stuff]]
 - [[#mail-mu4e][Mail (mu4e)]]
   - [[#using-org-mode][Using Org-Mode]]
@@ -23,6 +27,8 @@
 - [[#latex][LaTeX]]
 - [[#python][Python]]
   - [[#ruff-and-ruff-language-server][Ruff and Ruff Language Server]]
+- [[#rss-reader][RSS Reader]]
+- [[#accounting-software][Accounting Software]]
 
 * Introduction
 #+BEGIN_INFO
