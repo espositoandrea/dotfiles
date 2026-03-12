@@ -185,6 +185,25 @@ For some reasons, =g j=, =g k=, etc. do not work (especially in Org-Mode) due to
  :nvm "<home>" #'evil-beginning-of-visual-line
  :nvm "<end>"  #'evil-end-of-visual-line)
 #+end_src
+** macOS specific stuff
+Nowadays I mostly use macOS. These options make Emacs work better with the typical macOS workflow. I use Mr. Yamamoto port, installed using
+#+BEGIN_SRC sh :tangle no
+brew tap d12frosted/emacs-plus
+brew install emacs-plus
+#+END_SRC
+
+*** Using "native" full screen
+By default, Emacs is set to fullscreen by simply making itself as big as possible. This doesn't really play nicely with the notch and Spaces and Mission Control. Setting the following variable to =true= will force Emacs to use native full screen by default.
+#+BEGIN_SRC elisp
+(setq ns-use-native-fullscreen t)
+#+END_SRC
+I can now use ~toggle-frame-fullscreen~ (mapped to =SPC t F=) to toggle fullscreen as a typical macOS app.
+
+Additionally, I want to use the left "option" key as "meta" and the right one as "option" to input special characters.
+#+begin_src elisp
+(setq ns-alternate-modifier 'meta)
+(setq ns-right-alternate-modifier 'none)
+#+end_src
 
 * Org Mode
 #+begin_src elisp
