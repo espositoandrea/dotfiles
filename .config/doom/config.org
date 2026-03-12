@@ -449,6 +449,85 @@ We then assign all Doom Emacs' =org-capture= variables the value of the common i
 (eval-after-load 'ox '(require 'ox-koma-letter))
 #+END_SRC
 
+** Custom TOOD states
+*** Workflow for papers and articles
+
+Here I define a new workflow for a "PAPER" that should follow this pipeline:
+1. When the paper is ideated or assigned, it is noted as PAPER
+2. When started working on it, it is in WRITING
+3. When the paper is ready and is sent for review, it is INREVIEW
+4. When the paper is got back from reviews:
+   1. If the paper is being rejected it goes into REJECTED
+   2. If edits are required, it goes to TOEDIT
+      1. Once ready and sent out again, it gets back to INREVIEW
+   3. If the paper is accepted, it is marked as ACCEPTED
+      1. Once proof are ready and are received and must be checked, it becomes PROOF
+      2. Once proof are sent out it becomes INPRESS
+      3. One published it becomes PUBLISHED
+#+BEGIN_SRC elisp 
+(add-to-list 'org-todo-keywords
+        '(sequence
+           "PAPER(P)"  ; A paper, which is in itself a type of project
+           "WRITING(W)"  ; The paper has been started
+           "INREVIEW(R)"  ; The paper was sent for review and we are waiting for reviews
+           "TOEDIT(E)"  ; The paper was received back from review and edits should be made
+           "ACCEPTED(A)"  ; The paper was accepted
+           "PROOF(I)"  ; Proofs need to be checked
+           "INPRESS(S)"  ; Proofs were checked and the paper is now in press
+           "|"
+           "REJECTED(K)"  ; The paper was rejected
+           "PUBLISHED(D") ; The paper was accepted and is now published
+        t
+          )
+#+END_SRC
+
+We can now color-code the various keywords...
+#+BEGIN_SRC elisp
+(add-to-list 'org-todo-keyword-faces '("WRITING" . +org-todo-active))
+(add-to-list 'org-todo-keyword-faces '("INREVIEW"  . +org-todo-onhold))
+(add-to-list 'org-todo-keyword-faces '("ACCEPTED" . +org-todo-onhold))
+(add-to-list 'org-todo-keyword-faces '("INPRESS" . +org-todo-onhold))
+(add-to-list 'org-todo-keyword-faces '("PAPER" . +org-todo-project))
+(add-to-list 'org-todo-keyword-faces '("REJECTED"   . +org-todo-cancel))
+#+END_SRC
+** System-Wide Org Capture
+Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#default-org-capture
+
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! noflet)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(defun timu-func-make-capture-frame ()
+  "Create a new frame and run `org-capture'."
+  (interactive)
+  (unless (server-running-p)
+    (server-start))
+  (require 'noflet)
+  (make-frame '((name . "capture")
+                (t . 80)
+                (height . 25)))
+  (select-frame-by-name "capture")
+  (delete-other-windows)
+  (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+    (org-capture)))
+
+(defadvice org-capture-finalize
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame."
+  (if (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
+
+(defadvice org-capture-destroy
+    (after delete-capture-frame activate)
+  "Advise capture-destroy to close the frame."
+  (if (equal "capture" (frame-parameter nil 'name))
+      (delete-frame)))
+#+end_src
+
+#+RESULTS:
+: org-capture-destroy
+
 * Additional Stuff
 #+BEGIN_SRC elisp
 (display-battery-mode t)
