@@ -305,6 +305,25 @@ This class is heavily inspired by O'Reilly books (requires LaTeX =.cls= file in 
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 #+END_SRC
+**** ACM
+This class uses ACM =acmart= class (requires LaTeX =.cls= file in the same directory of the =.org= file).
+#+BEGIN_SRC elisp
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("acm"
+                 "\\documentclass{acmart}
+\\usepackage[utf8]{inputenc}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
+\\usepackage[normalem]{ulem}
+\\usepackage{soul}
+[NO-DEFAULT-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+END_SRC
 **** Springer LNCS
 This class uses Springer LNCS class (requires LaTeX =.cls= file in the same directory of the =.org= file).
 #+BEGIN_SRC elisp
