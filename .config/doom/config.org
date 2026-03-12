@@ -435,6 +435,7 @@ We then assign all Doom Emacs' =org-capture= variables the value of the common i
 ;; I like the journal file to be kept separate
 ;; (setq +org-capture-journal-file +org-capture-common-inbox-file)
 (setq +org-capture-projects-file +org-capture-common-inbox-file)
+(setq +org-capture-emails-file +org-capture-common-inbox-file)
 #+END_SRC
 ** Writing Letters
 #+BEGIN_SRC elisp :tangle packages.el
