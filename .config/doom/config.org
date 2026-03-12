@@ -275,10 +275,17 @@ This package allows citing from BibTeX. We must install it first...
 ** LaTeX Export
 This sets the LaTeX compiler to use latexmk and use =minted= to colorize source code listings.
 #+BEGIN_SRC elisp
-(after! 'ox-latex
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
+; (after! ox-latex
+;   (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")))
 (add-to-list 'org-latex-packages-alist '("" "minted"))
 (setq org-latex-listings 'minted)
+#+END_SRC
+
+When I export to PDF from Org-Mode using LaTeX, I don't need the =.tex= file (if I need to manually inspect or edit it, I just convert to tex first and then manually compile). Furthermore, I don't want any natbib/biblatex =.bbl= files. So I tell Org-Mode that they are "temporary log files"...
+#+BEGIN_SRC elisp
+(after! ox-latex
+    (add-to-list 'org-latex-logfiles-extensions "tex")
+    (add-to-list 'org-latex-logfiles-extensions "bbl"))
 #+END_SRC
 
 *** Custom LaTeX Classes
