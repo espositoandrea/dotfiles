@@ -536,7 +536,16 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
 #+END_src
 
 * Mail (mu4e)
+#+begin_src elisp
+(after! mu4e
+  (setq sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail))
+#+end_src
 #+BEGIN_SRC elisp
+(after! mu4e
 (setq mu4e-compose-format-flowed t)
 ;; (remove-hook! 'mu4e-compose-pre-hook #'org-msg-mode)
 ;; (add-hook! 'mu4e-compose-mode-hook #'message-mode)
@@ -547,14 +556,23 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
 ;; (add-hook! 'mu4e-compose-mode-hook #'turn-on-auto-fill)
 
 (setq mu4e-headers-date-format "%+4Y-%m-%d")
+(with-eval-after-load 'mm-decode
+    (add-to-list 'mm-discouraged-alternatives "text/html"))
 (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
 (setq mu4e-context-policy 'always-ask)
 ;; (add-hook 'mu4e-compose-mode-hook 'flyspell-mode)
 (setq mu4e-maildir-shortcuts '(("/uniba/Inbox" . ?u)
+                               ("/hotmail/Inbox" . ?h)
                                ))
                                ;; ("/studentiuniba/Inbox" . ?s)
-                               ;;("/hotmail/Inbox" . ?h)))
 (setq mu4e-compose-format-flowed t)
+(add-to-list 'mu4e-bookmarks
+               '(:name "All Inboxes" :query "m:/hotmail/Inbox or m:/uniba/Inbox" :key ?i))
+
+(add-to-list 'display-buffer-alist
+             `(,(regexp-quote mu4e-main-buffer-name)
+               display-buffer-same-window))
+)
 #+END_SRC
 
 ** Using Org-Mode
@@ -567,33 +585,37 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
 #+BEGIN_SRC elisp
 (use-package org-mime
   :ensure t)
+
+(setq org-mime-export-options '(:with-toc nil))
 #+END_SRC
 
 ** Accounts Setup
 *** Personal Account (Hotmail/Outlook)
-#+BEGIN_SRC elisp :tangle no
+#+BEGIN_SRC elisp
 (set-email-account! "Hotmail"
   '((mu4e-sent-folder       . "/hotmail/Sent")
     (mu4e-drafts-folder     . "/hotmail/Drafts")
     (mu4e-trash-folder      . "/hotmail/Deleted")
     (mu4e-refile-folder     . "/hotmail/Archive")
-    (mu4e-get-mail-command  . "mbsync -a")
+    ; (mu4e-get-mail-command  . "mbsync -a")
     (mu4e-update-interval   . 60)
     (smtpmail-smtp-user     . "esposito_andrea99@hotmail.com")
     (user-mail-address      . "esposito_andrea99@hotmail.com")    ;; only needed for mu < 1.4
     (smtpmail-stream-type   . starttls)
     (smtpmail-smtp-server . "smtp.office365.com")
     (smtpmail-smtp-service . 587)
-    (mu4e-compose-signature . (concat "Andrea Esposito\n"
-                                      "Master’s student in Computer Science\n"
+    (mu4e-compose-signature . (concat "Andrea Esposito, Ph.D.\n"
+                                      "Research Fellow (he/him/his)\n"
                                       "\n"
-                                      "University of Bari “Aldo Moro”\n"
+                                      "University of Bari Aldo Moro\n"
                                       "Department of Computer Science\n"
-                                      "Degree Course in Computer Science\n"
+                                      "I.V.U. Laboratory\n"
+                                      "Via E. Orabona 4, 70125 Bari, Italy (4th floor)\n"
                                       "\n"
-                                      "Student ID: 735116\n"
+                                      "eMail: andrea.esposito@uniba.it\n"
+                                      "Web: https://espositoandrea.github.io\n"
                                       "ORCID: 0000-0002-9536-3087\n"
-                                      "Personal Home Page: https://espositoandrea.github.io/")))
+                                      "Tel.: +39 080 5442461\n" )))
   t)
 #+END_SRC
 *** Work Account (University of Bari)
@@ -610,8 +632,8 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
     (smtpmail-stream-type   . starttls)
     (smtpmail-smtp-server . "smtp.uniba.it")
     (smtpmail-smtp-service . 587)
-    (mu4e-compose-signature . (concat "Andrea Esposito\n"
-                                      "PhD Student & Research Fellow\n"
+    (mu4e-compose-signature . (concat "Andrea Esposito, Ph.D.\n"
+                                      "Research Fellow (he/him/his)\n"
                                       "\n"
                                       "University of Bari Aldo Moro\n"
                                       "Department of Computer Science\n"
@@ -624,23 +646,6 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
                                       "Tel.: +39 080 5442461\n" )))
   t)
 #+END_SRC
-
-#+RESULTS:
-#+begin_example
-#s(mu4e-context "UniBa" #[nil ((mu4e-message "Switched to %s" label)) ((label . "UniBa"))] #[nil ((setq +mu4e-personal-addresses nil) (if (fboundp 'mu4e-clear-caches) (mu4e-clear-caches))) (t)] #[(msg) ((if msg (progn (string-prefix-p (format "/%s" label) (mu4e-message-field msg :maildir) t)))) ((label . "UniBa"))] ((mu4e-sent-folder . "/uniba/Sent") (mu4e-drafts-folder . "/uniba/Drafts") (mu4e-trash-folder . "/uniba/Trash") (mu4e-refile-folder . "/uniba/Archive") (mu4e-update-interval . 60) (smtpmail-smtp-user . "andrea.esposito") (user-mail-address . "andrea.esposito@uniba.it") (smtpmail-stream-type . starttls) (smtpmail-smtp-server . "smtp.uniba.it") (smtpmail-smtp-service . 587) (mu4e-compose-signature concat "Andrea Esposito
-" "PhD Student & Research Fellow
-" "
-" "University of Bari Aldo Moro
-" "Department of Computer Science
-" "I.V.U. Laboratory
-" "Via E. Orabona 4, 70125 Bari, Italy (4th floor)
-" "
-" "eMail: andrea.esposito@uniba.it
-" "Web: https://espositoandrea.github.io
-" "ORCID: 0000-0002-9536-3087
-" "Tel.: +39 080 5442461
-")))
-#+end_example
 
 *** University Account (Student) [OLD]
 #+BEGIN_SRC elisp :tangle no
@@ -656,7 +661,7 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
     (smtpmail-stream-type   . starttls)
     (smtpmail-smtp-server . "smtp.gmail.com")
     (smtpmail-smtp-service . 587)
-    (mu4e-compose-signature . (concat "Andrea Esposito\n"
+    (mu4e-compose-signature . (concat "Andrea Esposito, Ph.D.\n"
                                       "Master’s student in Computer Science\n"
                                       "\n"
                                       "University of Bari “Aldo Moro”\n"
