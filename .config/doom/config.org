@@ -443,6 +443,48 @@ We then assign all Doom Emacs' =org-capture= variables the value of the common i
 (setq +org-capture-projects-file +org-capture-common-inbox-file)
 (setq +org-capture-emails-file +org-capture-common-inbox-file)
 #+END_SRC
+
+I now define some custom capture templates, heavily inspired by [[https://vtimofeenko.com/posts/my-doom-emacs-setup/#capture-anything-that-crosses-your-mind-nothing-is-too-big-or-small][Vladimir Timofeenko's configuration]].
+#+begin_src elisp
+(after! org
+    ; use add-to-list and 'org... to add instead of replace (remove one parenthesis)
+    (setq org-capture-templates
+        `(("t" "Task" entry (file+headline +org-capture-todo-file "Inbox")
+         ,(string-join '("* TODO %?"
+                         ":PROPERTIES:"
+                         ":CREATED: %U"
+                         ":END:")
+                       "\n"))
+        ("m" "Mail" entry (file+headline +org-capture-emails-file "Inbox")
+            ,(string-join '("* TODO Mail: (%:fromname) %:subject :mail:"
+                            "SCHEDULED:%t"
+                            ":PROPERTIES:"
+                            ":CREATED: %U"
+                            ":END:"
+                            "%a")
+                        "\n")
+            :immediate-finish t :prepend t)
+        ("n" "Note" entry (file+headline +org-capture-notes-file "Inbox")
+         ,(string-join '("* %?"
+                         ":PROPERTIES:"
+                         ":CREATED: %U"
+                         ":END:")
+                       "\n"))
+        ("M" "Meeting" entry (file+headline +org-capture-todo-file "Inbox")
+         ,(string-join '("* %? :meeting:"
+                         "<%<%Y-%m-%d %a %H:00>>"
+                         ""
+                         "/Met with: /")
+                       "\n"))
+        ("a" "Appointment" entry (file+headline +org-capture-todo-file "Inbox")
+         ,(string-join '("* %? :appointment:"
+                         ":PROPERTIES:"
+                         ":CREATED: %U"
+                         ":END:")
+                       "\n"))
+      ))
+)
+#+end_src
 ** Writing Letters
 #+BEGIN_SRC elisp :tangle packages.el
 (package! ox-koma-letter :recipe
