@@ -9,6 +9,7 @@
   - [[#fix-evil-mode-navigation][Fix EVIL mode navigation]]
   - [[#macos-specific-stuff][macOS specific stuff]]
 - [[#org-mode][Org Mode]]
+  - [[#gantt-charts][Gantt Charts]]
   - [[#obsidian][Obsidian]]
   - [[#allowing-citations][Allowing Citations]]
   - [[#latex-export][LaTeX Export]]
@@ -19,6 +20,7 @@
   - [[#system-wide-org-capture][System-Wide Org Capture]]
 - [[#additional-stuff][Additional Stuff]]
 - [[#mail-mu4e][Mail (mu4e)]]
+  - [[#pgp-signature][PGP Signature]]
   - [[#using-org-mode][Using Org-Mode]]
   - [[#accounts-setup][Accounts Setup]]
 - [[#telegram][Telegram]]
@@ -29,6 +31,8 @@
   - [[#ruff-and-ruff-language-server][Ruff and Ruff Language Server]]
 - [[#rss-reader][RSS Reader]]
 - [[#accounting-software][Accounting Software]]
+- [[#support-for-additional-languages][Support for Additional Languages]]
+  - [[#pkl-httpspkl-langorg][Pkl (https://pkl-lang.org)]]
 
 * Introduction
 #+BEGIN_INFO
@@ -226,12 +230,32 @@ Additionally, I want to use the left "option" key as "meta" and the right one as
 I prefer tags to be aligned to the right.
 #+BEGIN_SRC elisp
 (setq fill-column 80)
-(setq org-tags-column (- fill-column))
+(after! org
+    (setq org-tags-column (- fill-column)))
 #+END_SRC
 
 This automatically sets =.org_archive= files as =org-mode= files, regardless of the presence (or absence) of a mode line.
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+#+end_src
+
+#+begin_src elisp
+(map! :after org-mode
+      :map org-mode-map
+      :localleader
+      :prefix ("O" . "delete property")
+
+      :desc "Delete Org-Mode property"
+      "e" #'org-delete-property)
+#+end_src
+
+** Gantt Charts
+#+BEGIN_SRC elisp :tangle packages.el
+(package! ox-taskjuggler
+  :recipe (:host github :repo "h-oll/ox-taskjuggler"))
+#+END_SRC
+#+begin_src elisp
+(use-package! ox-taskjuggler :after org)
 #+end_src
 
 ** Obsidian
@@ -449,7 +473,7 @@ I now define some custom capture templates, heavily inspired by [[https://vtimof
 (after! org
     ; use add-to-list and 'org... to add instead of replace (remove one parenthesis)
     (setq org-capture-templates
-        `(("t" "Task" entry (file+headline +org-capture-todo-file "Inbox")
+        `(("t" "Task" entry (file+headline +org-capture-todo-file "Tasks")
          ,(string-join '("* TODO %?"
                          ":PROPERTIES:"
                          ":CREATED: %U"
@@ -466,6 +490,12 @@ I now define some custom capture templates, heavily inspired by [[https://vtimof
             :immediate-finish t :prepend t)
         ("n" "Note" entry (file+headline +org-capture-notes-file "Inbox")
          ,(string-join '("* %?"
+                         ":PROPERTIES:"
+                         ":CREATED: %U"
+                         ":END:")
+                       "\n"))
+        ("j" "Journal entry" entry (file+datetree +org-capture-journal-file)
+         ,(string-join '("* %U\n%?"
                          ":PROPERTIES:"
                          ":CREATED: %U"
                          ":END:")
@@ -549,16 +579,15 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
 (defun timu-func-make-capture-frame ()
   "Create a new frame and run `org-capture'."
   (interactive)
-  (unless (server-running-p)
-    (server-start))
-  (require 'noflet)
   (make-frame '((name . "capture")
-                (t . 80)
+                (top . 300)
+                (left . 700)
+                (width . 80)
                 (height . 25)))
   (select-frame-by-name "capture")
   (delete-other-windows)
   (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
-    (org-capture)))
+          (org-capture)))
 
 (defadvice org-capture-finalize
     (after delete-capture-frame activate)
@@ -575,6 +604,7 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
 
 #+RESULTS:
 : org-capture-destroy
+
 
 * Additional Stuff
 #+BEGIN_SRC elisp
@@ -622,6 +652,12 @@ Code from: https://macowners.club/posts/org-capture-from-everywhere-macos/#defau
                display-buffer-same-window))
 )
 #+END_SRC
+
+** PGP Signature
+#+begin_src elisp
+(add-hook 'mu4e-compose-mode-hook 'epa-mail-mode)
+(add-hook 'mu4e-view-mode-hook 'epa-mail-mode)
+#+end_src
 
 ** Using Org-Mode
 #+BEGIN_SRC elisp :tangle packages.el
@@ -937,4 +973,11 @@ To make =ledger-mode= compatible with =hledger= I need to change the default dat
   :mode ("\\.hledger\\.journal\\'" . ledger-mode))
 (setq ledger-default-date-format "%Y-%m-%d")
 (setq ledger-binary-path hledger_script_path)
+#+end_src
+
+* Support for Additional Languages
+** Pkl (https://pkl-lang.org)
+#+begin_src elisp :tangle packages.el
+(package! pkl-mode
+    :recipe (:host github :repo "sin-ack/pkl-mode"))
 #+end_src
