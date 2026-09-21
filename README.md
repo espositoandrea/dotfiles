@@ -10,7 +10,7 @@ To restore this configuration, after ensuring that `git` is installed, run the f
 
 ```sh
 echo ".cfg" >> .gitignore
-git clone --bare git@github.com:espositoandrea/dotfiles.git $HOME.cfg
+git clone --bare git@github.com:espositoandrea/dotfiles.git $HOME/.cfg
 alias config='/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME'
 config config --local status.showUntrackedFiles no
 config checkout
